@@ -1,0 +1,13 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "npm",
+			"script": "start",
+			"path": "LPCIAD_Web",
+			"problemMatcher": [],
+			"label": "npm: start - LPCIAD_Web",
+			"detail": "ng serve"
+		}
+	]
+}

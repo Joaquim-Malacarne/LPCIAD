@@ -1,0 +1,59 @@
+/* Container principal */
+.swiper-container {
+  width: 100%;
+  height: 700px;
+  margin: 0 auto;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Wrapper */
+.swiper-wrapper {
+  display: flex;
+}
+
+/* Slides */
+.swiper-slide {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+  width: 100%;
+}
+
+/* Imagens */
+.swiper-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+/* Botões de navegação */
+.swiper-button-next,
+.swiper-button-prev {
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.swiper-button-next { right: 10px; }
+.swiper-button-prev { left: 10px; }
+
+/* Paginação */
+.swiper-pagination-bullet {
+  background-color: rgba(255, 255, 255, 0.7);
+}
+.swiper-pagination-bullet-active {
+  background-color: #fff;
+}

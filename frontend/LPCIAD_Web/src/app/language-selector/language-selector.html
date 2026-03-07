@@ -1,0 +1,28 @@
+<div class="language-selector">
+  <button
+    mat-button
+    class="lang-btn"
+    [matMenuTriggerFor]="langMenu"
+    (menuOpened)="isOpen = true"
+    (menuClosed)="isOpen = false"
+    [attr.aria-expanded]="isOpen"
+    aria-haspopup="true"
+    aria-label="Selecionar idioma"
+    type="button"
+  >
+    <img class="flag" [src]="'assets/' + currentLang + '.png'" [alt]="currentLang" />
+    <span class="lang-code">{{ currentLang }}</span>
+
+    <!-- Chevron SVG: rota para baixo quando aberto -->
+    <svg class="chevron open" viewBox="0 0 24 24" [class.open]="isOpen" aria-hidden="true" focusable="false">
+      <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z" fill="currentColor"/>
+    </svg>
+  </button>
+
+  <mat-menu #langMenu="matMenu" xPosition="after" yPosition="above" class="lang-menu">
+    <button mat-menu-item *ngFor="let l of langs" (click)="select(l.code)">
+      <img class="flag-menu" [src]="'assets/' + l.code + '.png'" [alt]="l.label" />
+      <span class="menu-label">{{ l.label }}</span>
+    </button>
+  </mat-menu>
+</div>
