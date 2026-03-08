@@ -1,0 +1,74 @@
+<div class="add-post-wrapper">
+
+  <!-- Descrição + Botões -->
+  <div class="add-post-description-bar">
+    <textarea
+      class="description-input"
+      placeholder="Descrição breve do post..."
+      [(ngModel)]="description"
+      rows="2"
+      spellcheck="false"
+    ></textarea>
+    <div class="description-actions">
+      <button class="btn-secondary" (click)="onClear()">Limpar</button>
+      <button class="btn-primary" [class.btn-success]="saved" (click)="onSave()">
+        {{ saved ? '✓ Salvo!' : 'Publicar Post' }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Editor Split -->
+  <div class="editor-split">
+
+    <div class="editor-pane">
+      <div class="pane-header">
+        <span class="pane-label">Editor</span>
+        <span class="pane-hint">Markdown</span>
+        <div class="lang-toggle">
+          <button
+            class="lang-btn"
+            [class.active]="activeLang === 'pt'"
+            (click)="setLang('pt')"
+          >PT</button>
+          <button
+            class="lang-btn"
+            [class.active]="activeLang === 'en'"
+            (click)="setLang('en')"
+          >EN</button>
+        </div>
+      </div>
+      <textarea
+        class="editor-textarea"
+        [(ngModel)]="activeMarkdown"
+        placeholder="Escreva em {{ activeLang === 'pt' ? 'português' : 'inglês' }}..."
+        spellcheck="false"
+      ></textarea>
+    </div>
+
+    <div class="pane-divider"></div>
+
+    <div class="preview-pane">
+      <div class="pane-header">
+        <div class="pane-header-left">
+          <span class="pane-label">Preview</span>
+          <span class="pane-hint">{{ activeLang === 'pt' ? 'Português' : 'English' }}</span>
+        </div>
+      </div>
+      <div class="preview-body">
+        <div *ngIf="activeMarkdown.trim(); else empty" [innerHTML]="renderedMarkdown"></div>
+        <ng-template #empty>
+          <p class="preview-empty">O preview aparece aqui conforme você escreve...</p>
+        </ng-template>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Rodapé com stats -->
+  <div class="add-post-footer">
+    <span><strong>{{ wordCount }}</strong> palavras</span>
+    <span><strong>{{ charCount }}</strong> caracteres</span>
+    <span><strong>{{ lineCount }}</strong> linhas</span>
+  </div>
+
+</div>

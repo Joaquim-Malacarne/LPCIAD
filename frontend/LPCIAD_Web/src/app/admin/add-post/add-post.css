@@ -1,0 +1,411 @@
+/* ─── Wrapper ───────────────────────────────────────────── */
+.add-post-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 85px); /* desconta o header do projeto */
+  font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  background: #ffffff;
+  color: #1a1a1a;
+}
+
+.pane-header {
+  padding: 10px 20px;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #004267;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  background: #f5f8fb;
+}
+
+.pane-header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pane-header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pane-label {
+  font-weight: 600;
+  color: #004267;
+}
+
+.pane-hint {
+  font-weight: 400;
+  color: #999;
+  font-size: 11px;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.add-post-breadcrumb {
+  font-size: 14px;
+  color: #555;
+  letter-spacing: 0.3px;
+}
+
+.add-post-breadcrumb strong {
+  color: #004267;
+  font-weight: 600;
+}
+
+.add-post-actions {
+  display: flex;
+  gap: 10px;
+}
+
+/* ─── Botões ────────────────────────────────────────────── */
+.btn-primary {
+  background: #004267;
+  color: #ffffff;
+  border: none;
+  padding: 8px 20px;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+  border-radius: 4px;
+}
+
+.btn-primary:hover {
+  background: #005a8e;
+  transform: translateY(-1px);
+}
+
+.btn-primary.btn-success {
+  background: #2e7d32;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: #004267;
+  border: 1.5px solid #004267;
+  padding: 8px 20px;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+  border-radius: 4px;
+}
+
+.btn-secondary:hover {
+  background: #004267;
+  color: #ffffff;
+}
+
+.title-input {
+  width: 100%;
+  border: none;
+  border-bottom: 2px solid #e0e0e0;
+  padding: 10px 0;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: #1a1a1a;
+  outline: none;
+  background: transparent;
+  transition: border-color 0.2s ease;
+  box-sizing: border-box;
+}
+
+.title-input::placeholder {
+  color: #bbb;
+}
+
+.title-input:focus {
+  border-bottom-color: #004267;
+}
+
+/* ─── Split Editor ──────────────────────────────────────── */
+.editor-split {
+  display: grid;
+  grid-template-columns: 1fr 1px 1fr;
+  flex: 1;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.pane-divider {
+  background: #e0e0e0;
+}
+
+/* ─── Header dos painéis ────────────────────────────────── */
+.pane-header {
+  padding: 10px 20px;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #004267;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  background: #f5f8fb;
+  height: 40px;
+}
+
+.pane-header span {
+  font-weight: 400;
+  color: #999;
+  font-size: 11px;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+/* ─── Painel esquerdo (textarea) ────────────────────────── */
+.editor-pane {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.editor-textarea {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 20px 24px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 14px;
+  line-height: 1.75;
+  color: #333;
+  resize: none;
+  overflow-y: auto;
+  background: #fafafa;
+}
+
+.editor-textarea::placeholder {
+  color: #ccc;
+}
+
+/* ─── Painel direito (preview) ──────────────────────────── */
+.preview-pane {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.preview-body {
+  flex: 1;
+  padding: 20px 28px;
+  overflow-y: auto;
+  font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  font-size: 15px;
+  line-height: 1.8;
+  color: #1a1a1a;
+}
+
+.preview-empty {
+  color: #ccc;
+  font-size: 14px;
+  margin-top: 40px;
+  text-align: center;
+}
+
+/* ─── Estilos Markdown renderizado ─────────────────────── */
+.preview-body ::ng-deep .md-h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #004267;
+  margin: 6px 0 16px;
+  border-bottom: 2px solid #004267;
+  padding-bottom: 6px;
+}
+
+.preview-body ::ng-deep .md-h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #004267;
+  margin: 24px 0 10px;
+}
+
+.preview-body ::ng-deep .md-h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #005a8e;
+  margin: 18px 0 8px;
+}
+
+.preview-body ::ng-deep .md-p {
+  margin-bottom: 12px;
+}
+
+.preview-body ::ng-deep .md-ul,
+.preview-body ::ng-deep .md-ol {
+  margin: 8px 0 12px 22px;
+}
+
+.preview-body ::ng-deep li {
+  margin-bottom: 4px;
+}
+
+.preview-body ::ng-deep .md-blockquote {
+  border-left: 3px solid #004267;
+  padding: 8px 16px;
+  margin: 14px 0;
+  color: #666;
+  font-style: italic;
+  background: #f0f5fa;
+}
+
+.preview-body ::ng-deep .md-code-block {
+  background: #f4f4f4;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 14px 16px;
+  margin: 12px 0;
+  overflow-x: auto;
+  font-size: 13px;
+  line-height: 1.6;
+  font-family: 'Courier New', monospace;
+  color: #333;
+}
+
+.preview-body ::ng-deep .md-inline-code {
+  background: #f0f0f0;
+  color: #004267;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-size: 13px;
+  font-family: 'Courier New', monospace;
+}
+
+.preview-body ::ng-deep .md-link {
+  color: #004267;
+  text-decoration: underline;
+}
+
+.preview-body ::ng-deep .md-link:hover {
+  color: #005a8e;
+}
+
+.preview-body ::ng-deep .md-hr {
+  border: none;
+  border-top: 1px solid #e0e0e0;
+  margin: 20px 0;
+}
+
+.preview-body ::ng-deep .md-img {
+  max-width: 100%;
+  border-radius: 4px;
+  margin: 8px 0;
+}
+
+.preview-body ::ng-deep strong {
+  font-weight: 700;
+  color: #111;
+}
+
+.preview-body ::ng-deep em {
+  font-style: italic;
+}
+
+.preview-body ::ng-deep del {
+  color: #999;
+}
+
+/* ─── Rodapé com stats ──────────────────────────────────── */
+.add-post-footer {
+  height: 32px;
+  background: #f5f8fb;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  align-items: center;
+  padding: 0 32px;
+  gap: 24px;
+  font-size: 12px;
+  color: #888;
+  flex-shrink: 0;
+}
+
+.add-post-footer strong {
+  color: #004267;
+  font-weight: 600;
+}
+
+.add-post-description-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 32px;
+  background: #ffffff;
+  border-bottom: 1px solid #e0e0e0;
+  flex-shrink: 0;
+}
+
+.description-input {
+  flex: 1;
+  border: none;
+  border-bottom: 2px solid #e0e0e0;
+  padding: 8px 0;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+  font-size: 15px;
+  color: #444;
+  outline: none;
+  background: transparent;
+  resize: none;
+  transition: border-color 0.2s ease;
+  box-sizing: border-box;
+  line-height: 1.5;
+}
+
+.description-input::placeholder {
+  color: #bbb;
+}
+
+.description-input:focus {
+  border-bottom-color: #004267;
+}
+
+.description-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.lang-toggle {
+  display: flex;
+  margin-left: auto;
+  border: 1.5px solid #004267;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.lang-btn {
+  background: transparent;
+  border: none;
+  padding: 3px 12px;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: #004267;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.lang-btn:first-child {
+  border-right: 1.5px solid #004267;
+}
+
+.lang-btn:hover {
+  background: rgba(0, 66, 103, 0.08);
+}
+
+.lang-btn.active {
+  background: #004267;
+  color: #ffffff;
+}
