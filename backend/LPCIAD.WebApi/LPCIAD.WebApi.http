@@ -1,0 +1,12 @@
+@LPCIAD.WebApi_HostAddress = https://localhost:5001
+
+GET {{LPCIAD.WebApi_HostAddress}}/api/posts
+Accept: application/json
+
+###
+
+POST {{LPCIAD.WebApi_HostAddress}}/api/posts
+Accept: application/json
+Content-Type: application/json
+
+{}
