@@ -39,7 +39,8 @@ public class PostService : IPostService
                     Title = ExtractTitle(System.IO.File.ReadAllText(ptPath), id),
                     Description = metadata.Description,
                     Date = metadata.CreatedAt,
-                    Images = GetImages(id)
+                    Images = GetImages(id),
+                    IsActive = metadata.IsActive
                 };
             })
             .Where(p => p != null)

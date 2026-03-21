@@ -7,4 +7,5 @@ public class PostListItemResponse
     public string? Description { get; set; }
     public DateTime Date { get; set; }
     public List<string> Images { get; set; } = new();
+    public bool IsActive { get; set; }
 }
