@@ -1,0 +1,70 @@
+<div class="dashboard-wrapper">
+
+    <!-- Cabeçalho da página -->
+    <div class="dashboard-topbar">
+        <div class="topbar-left">
+            <span class="topbar-title">Gerenciar Posts</span>
+            <span class="topbar-count" *ngIf="!loading">{{ posts.length }} publicação(ões)</span>
+        </div>
+        <div class="topbar-right">
+            <button class="btn-primary" (click)="onNewPost()">+ Novo Post</button>
+        </div>
+    </div>
+
+    <!-- Loading -->
+    <div class="feedback-state" *ngIf="loading">
+        <span class="loading-text">Carregando posts...</span>
+    </div>
+
+    <!-- Erro -->
+    <div class="feedback-state error-state" *ngIf="error && !loading">
+        <span>{{ error }}</span>
+        <button class="btn-primary" (click)="loadPosts()">Tentar novamente</button>
+    </div>
+
+    <!-- Tabela de posts -->
+    <div class="table-container" *ngIf="!loading && !error">
+        <table class="posts-table" *ngIf="posts.length > 0">
+            <thead>
+                <tr>
+                    <th class="col-id">#</th>
+                    <th class="col-title">Título</th>
+                    <th class="col-desc">Descrição</th>
+                    <th class="col-date">Data</th>
+                    <th class="col-actions">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let post of posts" class="table-row">
+                    <td class="col-id">{{ post.id }}</td>
+                    <td class="col-title">
+                        <span class="post-title">{{ post.title }}</span>
+                    </td>
+                    <td class="col-desc">
+                        <span class="post-desc" *ngIf="post.description; else noDesc">
+                            {{ post.description }}
+                        </span>
+                        <ng-template #noDesc>
+                            <span class="empty-label">—</span>
+                        </ng-template>
+                    </td>
+                    <td class="col-date">{{ post.date | date:'dd/MM/yyyy' }}</td>
+                    <td class="col-actions">
+                        <button class="btn-action btn-edit" (click)="onEdit(post)">Editar</button>
+                        <button class="btn-action" [class.btn-active]="post.isActive"
+                            [class.btn-inactive]="!post.isActive"
+                            [title]="post.isActive ? 'Desativar post' : 'Ativar post'" (click)="onToggleActive(post)">
+                            {{ post.isActive ? '✓ Ativo' : '✗ Inativo' }}
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="empty-state" *ngIf="posts.length === 0">
+            <p>Nenhum post encontrado.</p>
+            <button class="btn-primary" (click)="onNewPost()">Criar o primeiro post</button>
+        </div>
+    </div>
+
+</div>

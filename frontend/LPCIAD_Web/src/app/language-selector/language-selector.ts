@@ -17,7 +17,6 @@ export class LanguageSelector {
   langs = [
     { code: 'BR', label: 'Português (BR)' },
     { code: 'EN', label: 'English (EN)' },
-    { code: 'ES', label: 'Español (ES)' }
   ];
 
   select(code: string) {
