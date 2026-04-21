@@ -24,7 +24,6 @@
           <img [src]="slide.imageUrl" [alt]="slide.title" class="slide-image" />
           <div class="slide-overlay"></div>
           <div class="slide-content">
-            <span class="slide-tag">Publicação</span>
             <h2 class="slide-title">{{ slide.title }}</h2>
             <p class="slide-desc" *ngIf="slide.description">{{ slide.description }}</p>
             <span class="slide-date">{{ slide.date | date:'dd \'de\' MMMM \'de\' yyyy':'':'pt-BR' }}</span>
