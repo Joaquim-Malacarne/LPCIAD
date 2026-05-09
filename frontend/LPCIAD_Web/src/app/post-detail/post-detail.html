@@ -1,0 +1,68 @@
+<div class="detail-page">
+
+  <div class="detail-topbar">
+    <button class="btn-back" (click)="goBack()">
+      <span class="back-arrow">←</span> Voltar
+    </button>
+
+    <div class="lang-toggle" *ngIf="hasEnglish && !loading && !error">
+      <button class="lang-btn" [class.active]="activeLang === 'pt'" (click)="setLang('pt')">PT</button>
+      <button class="lang-btn" [class.active]="activeLang === 'en'" (click)="setLang('en')">EN</button>
+    </div>
+  </div>
+
+  <div class="state-container" *ngIf="loading">
+    <div class="spinner"></div>
+    <p class="state-text">Carregando publicação...</p>
+  </div>
+
+  <div class="state-container error" *ngIf="error && !loading">
+    <p class="state-text">{{ error }}</p>
+    <button class="btn-back" (click)="goBack()">← Voltar</button>
+  </div>
+
+  <div class="detail-body" *ngIf="post && !loading && !error">
+
+    <div class="cover-wrapper" *ngIf="getCoverUrl()">
+      <img [src]="getCoverUrl()!" [alt]="extractTitle(post.content)" class="cover-image" />
+    </div>
+
+    <div class="post-meta">
+      <span class="meta-date">{{ formatDate(post.date) }}</span>
+    </div>
+
+    <div class="markdown-body" [innerHTML]="renderedContent"></div>
+
+    <div class="image-gallery" *ngIf="getExtraImages().length > 0">
+      <h3 class="gallery-title">Galeria</h3>
+      <div class="gallery-grid">
+        <div class="gallery-item" *ngFor="let img of getExtraImages()">
+          <img [src]="getExtraImageUrl(img)" [alt]="img" class="gallery-img" />
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="related-section" *ngIf="relatedPosts.length > 0 && !loading">
+    <div class="related-header">
+      <h2 class="related-title">Outros Posts</h2>
+      <div class="related-divider"></div>
+    </div>
+
+    <div class="related-grid">
+      <article class="related-card" *ngFor="let rp of relatedPosts" (click)="goToPost(rp.id)">
+        <div class="related-img-wrapper">
+          <img *ngIf="getImageUrl(rp)" [src]="getImageUrl(rp)!" [alt]="rp.title" class="related-img" />
+          <div class="related-img-placeholder" *ngIf="!getImageUrl(rp)"><span>📄</span></div>
+        </div>
+        <div class="related-info">
+          <p class="related-date">📅 {{ formatDate(rp.date) }}</p>
+          <h3 class="related-post-title">{{ rp.title }}</h3>
+          <p class="related-desc" *ngIf="rp.description">{{ rp.description }}</p>
+        </div>
+      </article>
+    </div>
+  </div>
+
+</div>

@@ -1,23 +1,48 @@
-<div class="swiper-container">
-  <div class="swiper-wrapper">
-    <div class="swiper-slide">
-      <img src="assets/img1.jpg" alt="Imagem 1">
+<section class="gallery-section">
+
+  <!-- Loading -->
+  <div class="gallery-feedback" *ngIf="loading">
+    <div class="gallery-spinner"></div>
+    <span>Carregando publicações...</span>
+  </div>
+
+  <!-- Erro -->
+  <div class="gallery-feedback gallery-error" *ngIf="error && !loading">
+    <span>Não foi possível carregar as publicações.</span>
+  </div>
+
+  <!-- Sem posts com imagem -->
+  <div class="gallery-feedback" *ngIf="!loading && !error && slides.length === 0">
+    <span>Nenhuma publicação com imagem disponível.</span>
+  </div>
+
+  <!-- Carrossel -->
+  <div class="gallery-swiper swiper" *ngIf="!loading && !error && slides.length > 0">
+    <div class="swiper-wrapper">
+      <div class="swiper-slide" *ngFor="let slide of slides">
+        <div class="slide-inner">
+          <img [src]="slide.imageUrl" [alt]="slide.title" class="slide-image" />
+          <div class="slide-overlay"></div>
+          <div class="slide-content">
+            <h2 class="slide-title">{{ slide.title }}</h2>
+            <p class="slide-desc" *ngIf="slide.description">{{ slide.description }}</p>
+            <span class="slide-date">{{ slide.date | date:'dd \'de\' MMMM \'de\' yyyy':'':'pt-BR' }}</span>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="swiper-slide">
-      <img src="assets/img2.jpg" alt="Imagem 2">
-    </div>
-    <div class="swiper-slide">
-      <img src="assets/img3.jpg" alt="Imagem 3">
-    </div>
-    <div class="swiper-slide">
-      <img src="assets/img4.jpg" alt="Imagem 4">
+
+    <!-- Navegação -->
+    <div class="swiper-button-prev"></div>
+    <div class="swiper-button-next"></div>
+
+    <!-- Paginação -->
+    <div class="swiper-pagination"></div>
+
+    <!-- Contador de slides -->
+    <div class="slide-counter">
+      <span *ngFor="let s of slides; let i = index" class="counter-dot"></span>
     </div>
   </div>
 
-  <!-- Botões de navegação -->
-  <div class="swiper-button-next"></div>
-  <div class="swiper-button-prev"></div>
-
-  <!-- Paginação -->
-  <div class="swiper-pagination"></div>
-</div>
+</section>

@@ -16,3 +16,15 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   align-items: center !important;
   gap: 8px;
 }
+
+.swiper-button-prev::after,
+.swiper-button-next::after {
+  content: '' !important;
+  display: none !important;
+}
+:root {
+  --swiper-navigation-color: transparent;
+}
+:root {
+  --swiper-navigation-size: 16px;
+}
