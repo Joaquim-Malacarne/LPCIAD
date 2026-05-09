@@ -1,0 +1,46 @@
+<section class="post-list-section">
+
+  <div class="section-header">
+    <h2 class="section-title">Publicações</h2>
+    <div class="section-divider"></div>
+  </div>
+
+  <div class="state-container" *ngIf="loading">
+    <div class="spinner"></div>
+    <p class="state-text">Carregando publicações...</p>
+  </div>
+
+  <div class="state-container error" *ngIf="error && !loading">
+    <p class="state-text">{{ error }}</p>
+  </div>
+
+  <div class="posts-grid" *ngIf="!loading && !error && posts.length > 0">
+    <article class="post-card" *ngFor="let post of posts">
+
+      <div class="post-image-wrapper">
+        <img
+          *ngIf="getImageUrl(post)"
+          [src]="getImageUrl(post)!"
+          [alt]="post.title"
+          class="post-image"
+        />
+        <div class="post-image-placeholder" *ngIf="!getImageUrl(post)">
+          <span class="placeholder-icon">📄</span>
+        </div>
+      </div>
+
+      <div class="post-content">
+        <p class="post-date">{{ formatDate(post.date) }}</p>
+        <h3 class="post-title" (click)="goToPost(post.id)">{{ post.title }}</h3>
+        <p class="post-description" *ngIf="post.description">
+          {{ post.description }}
+        </p>
+        <button class="btn-read-more" (click)="goToPost(post.id)">
+          Ler mais
+        </button>
+      </div>
+
+    </article>
+  </div>
+
+</section>

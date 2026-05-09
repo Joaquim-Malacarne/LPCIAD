@@ -5,6 +5,11 @@ export const routes: Routes = [
   { path: '', component: Home },
   { path: 'about', component: Home },
   {
+    path: 'post/:id',
+    loadComponent: () =>
+      import('./post-detail/post-detail').then(m => m.PostDetail)
+  },
+  {
     path: 'admin/add-post',
     loadComponent: () =>
       import('./admin/add-post/add-post').then(m => m.AddPost)
