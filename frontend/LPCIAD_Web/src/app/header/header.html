@@ -11,25 +11,25 @@
 
     <ul class="nav-menu">
       <li>
-        <a href="https://www.unisantos.br/" target="_blank" rel="noopener noreferrer">UNIVERSIDADE</a>
+        <a href="https://www.unisantos.br/" target="_blank" rel="noopener noreferrer">{{ 'nav.university' | translate:(lang$ | async) }}</a>
       </li>
       <li>
-        <a routerLink="/integrantes">INTEGRANTES</a>
+        <a routerLink="/integrantes">{{ 'nav.members' | translate:(lang$ | async) }}</a>
       </li>
       <li>
-        <a routerLink="/" fragment="pesquisa">PESQUISA</a>
+        <a routerLink="/" fragment="pesquisa">{{ 'nav.research' | translate:(lang$ | async) }}</a>
       </li>
       <li>
-        <a routerLink="/" fragment="projetos">PROJETOS</a>
+        <a routerLink="/" fragment="projetos">{{ 'nav.projects' | translate:(lang$ | async) }}</a>
       </li>
       <li>
-        <a routerLink="/" fragment="atividades">ATIVIDADES</a>
+        <a routerLink="/" fragment="atividades">{{ 'nav.activities' | translate:(lang$ | async) }}</a>
       </li>
       <li>
-        <a routerLink="/" fragment="parcerias">PARCERIAS</a>
+        <a routerLink="/" fragment="parcerias">{{ 'nav.partnerships' | translate:(lang$ | async) }}</a>
       </li>
       <li>
-        <a routerLink="/" fragment="cursos-eventos">CURSOS &amp; EVENTOS</a>
+        <a routerLink="/" fragment="cursos-eventos">{{ 'nav.courses_events' | translate:(lang$ | async) }}</a>
       </li>
     </ul>
 

@@ -1,7 +1,23 @@
-<section class="integrantes-section">
-  <div class="integrantes-header">
-    <h1 class="integrantes-title">Integrantes</h1>
-    <div class="integrantes-divider"></div>
-    <p class="integrantes-subtitle">Em breve.</p>
+<div class="integrantes-page">
+
+  <!-- Loading -->
+  <div class="state-container" *ngIf="loading">
+    <div class="spinner"></div>
   </div>
-</section>
+
+  <!-- Erro -->
+  <div class="state-container" *ngIf="error && !loading">
+    <p class="state-text">{{ 'integrantes.error' | translate:(lang$ | async) }}</p>
+  </div>
+
+  <!-- Vazio -->
+  <div class="state-container" *ngIf="empty && !loading && !error">
+    <p class="state-text">{{ 'integrantes.empty' | translate:(lang$ | async) }}</p>
+  </div>
+
+  <!-- Conteúdo -->
+  <div class="integrantes-body" *ngIf="!loading && !error && !empty">
+    <div class="markdown-body" [innerHTML]="renderedContent"></div>
+  </div>
+
+</div>

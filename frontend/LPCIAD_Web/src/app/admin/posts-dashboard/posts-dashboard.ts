@@ -1,14 +1,16 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { PostListItem } from '../../models/post.model';
 import { PostService } from '../../services/post';
+import { TranslatePipe } from '../../pipes/translate.pipe';
+import { LanguageService } from '../../services/language.service';
 
 @Component({
   selector: 'app-posts-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslatePipe],
   templateUrl: './posts-dashboard.html',
   styleUrls: ['./posts-dashboard.css']
 })
@@ -22,6 +24,8 @@ export class PostsDashboard implements OnInit, OnDestroy {
   toastType: 'success' | 'error' = 'success';
   toastVisible: boolean = false;
   private toastTimer: ReturnType<typeof setTimeout> | null = null;
+
+  lang$ = inject(LanguageService).currentLang$;
 
   constructor(private postService: PostService, private router: Router) {}
 

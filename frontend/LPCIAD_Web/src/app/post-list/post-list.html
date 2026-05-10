@@ -1,17 +1,17 @@
 <section class="post-list-section">
 
   <div class="section-header">
-    <h2 class="section-title">Publicações</h2>
+    <h2 class="section-title">{{ 'post_list.title' | translate:(lang$ | async) }}</h2>
     <div class="section-divider"></div>
   </div>
 
   <div class="state-container" *ngIf="loading">
     <div class="spinner"></div>
-    <p class="state-text">Carregando publicações...</p>
+    <p class="state-text">{{ 'post_list.loading' | translate:(lang$ | async) }}</p>
   </div>
 
   <div class="state-container error" *ngIf="error && !loading">
-    <p class="state-text">{{ error }}</p>
+    <p class="state-text">{{ error | translate:(lang$ | async) }}</p>
   </div>
 
   <div class="posts-grid" *ngIf="!loading && !error && posts.length > 0">
@@ -38,13 +38,13 @@
             [style.color]="getTagColor(tag)"
           >{{ tag }}</span>
         </div>
-        <p class="post-date">{{ formatDate(post.date) }}</p>
+        <p class="post-date">{{ formatDate(post.date, lang$ | async) }}</p>
         <h3 class="post-title" (click)="goToPost(post.id)">{{ post.title }}</h3>
         <p class="post-description" *ngIf="post.description">
           {{ post.description }}
         </p>
         <button class="btn-read-more" (click)="goToPost(post.id)">
-          Ler mais
+          {{ 'post_list.read_more' | translate:(lang$ | async) }}
         </button>
       </div>
 

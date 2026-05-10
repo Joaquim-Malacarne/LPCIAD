@@ -1,8 +1,10 @@
-import { Component, Inject, OnInit, OnDestroy, PLATFORM_ID } from '@angular/core';
+import { Component, Inject, OnInit, OnDestroy, PLATFORM_ID, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Swiper } from 'swiper';
 import { Navigation, Pagination, Autoplay } from 'swiper/modules';
 import { PostService } from '../services/post';
+import { TranslatePipe } from '../pipes/translate.pipe';
+import { LanguageService } from '../services/language.service';
 
 interface GallerySlide {
   postId: number;
@@ -15,7 +17,7 @@ interface GallerySlide {
 @Component({
   selector: 'app-gallery',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslatePipe],
   templateUrl: './gallery.html',
   styleUrls: ['./gallery.css']
 })
@@ -24,6 +26,7 @@ export class Gallery implements OnInit, OnDestroy {
   slides: GallerySlide[] = [];
   loading = true;
   error = false;
+  lang$ = inject(LanguageService).currentLang$;
 
   private swiperInstance: Swiper | null = null;
 

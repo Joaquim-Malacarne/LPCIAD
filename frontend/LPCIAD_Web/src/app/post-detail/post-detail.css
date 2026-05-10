@@ -258,13 +258,6 @@
   background: #f5f8fb;
 }
 
-/* ─── Galeria extra ──────────────────────────────────────── */
-.image-gallery {
-  margin-top: 48px;
-  padding-top: 32px;
-  border-top: 1px solid #e8e8e8;
-}
-
 .gallery-title {
   font-size: 18px;
   font-weight: 700;
@@ -296,123 +289,10 @@
   transform: scale(1.05);
 }
 
-/* ─── Seção "Outros Posts" ───────────────────────────────── */
-.related-section {
+/* ─── Wrapper "Outros Posts" ─────────────────────────────── */
+.outros-posts-wrapper {
   background: #f5f8fb;
-  padding: 56px 64px;
   border-top: 1px solid #e0e8ef;
-}
-
-.related-header {
-  margin-bottom: 36px;
-}
-
-.related-title {
-  font-size: 22px;
-  font-weight: 700;
-  color: #004267;
-  margin: 0 0 10px;
-}
-
-.related-divider {
-  width: 48px;
-  height: 3px;
-  background: #004267;
-  border-radius: 2px;
-}
-
-/* ─── Grid de relacionados ───────────────────────────────── */
-.related-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 28px;
-}
-
-.related-card {
-  background: #ffffff;
-  border-radius: 6px;
-  overflow: hidden;
-  cursor: pointer;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  display: flex;
-  flex-direction: column;
-}
-
-.related-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 6px 20px rgba(0, 66, 103, 0.12);
-}
-
-/* ─── Imagem do card relacionado ─────────────────────────── */
-.related-img-wrapper {
-  width: 100%;
-  height: 150px;
-  overflow: hidden;
-  background: #e8eef3;
-  flex-shrink: 0;
-}
-
-.related-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  transition: transform 0.3s ease;
-}
-
-.related-card:hover .related-img {
-  transform: scale(1.05);
-}
-
-.related-img-placeholder {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 32px;
-  opacity: 0.35;
-}
-
-/* ─── Info do card relacionado ───────────────────────────── */
-.related-info {
-  padding: 16px 18px 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  flex: 1;
-}
-
-.related-date {
-  font-size: 12px;
-  color: #999;
-  margin: 0;
-}
-
-.related-post-title {
-  font-size: 15px;
-  font-weight: 700;
-  color: #1a1a1a;
-  margin: 0;
-  line-height: 1.4;
-  transition: color 0.2s ease;
-}
-
-.related-card:hover .related-post-title {
-  color: #004267;
-}
-
-.related-desc {
-  font-size: 13px;
-  color: #888;
-  margin: 0;
-  line-height: 1.5;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
 }
 
 /* ─── Estados ────────────────────────────────────────────── */
@@ -447,12 +327,9 @@
 @media (max-width: 900px) {
   .detail-topbar { padding: 14px 24px; }
   .detail-body { padding: 32px 20px 48px; }
-  .related-section { padding: 40px 24px; }
-  .related-grid { grid-template-columns: 1fr 1fr; gap: 20px; }
 }
 
 @media (max-width: 600px) {
   .cover-wrapper { height: 220px; }
-  .related-grid { grid-template-columns: 1fr; }
   .detail-topbar { padding: 12px 16px; }
 }

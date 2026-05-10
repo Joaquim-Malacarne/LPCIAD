@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { Gallery } from '../gallery/gallery';
-import { PostList } from '../post-list/post-list';
+import { PostsFeed } from '../posts-feed/posts-feed';
 
 @Component({
   selector: 'app-home',
-  imports: [Gallery, PostList],
+  imports: [Gallery, PostsFeed],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })

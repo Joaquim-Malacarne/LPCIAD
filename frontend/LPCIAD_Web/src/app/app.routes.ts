@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { Home } from './home/home';
+import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   { path: '', component: Home },
@@ -15,12 +16,25 @@ export const routes: Routes = [
       import('./post-detail/post-detail').then(m => m.PostDetail)
   },
   {
+    path: 'login',
+    loadComponent: () =>
+      import('./login/login').then(m => m.Login)
+  },
+  {
     path: 'admin/add-post',
+    canActivate: [authGuard],
     loadComponent: () =>
       import('./admin/add-post/add-post').then(m => m.AddPost)
   },
   {
+    path: 'admin/edit-integrantes',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./admin/edit-integrantes/edit-integrantes').then(m => m.EditIntegrantes)
+  },
+  {
     path: 'admin/posts-dashboard',
+    canActivate: [authGuard],
     loadComponent: () =>
       import('./admin/posts-dashboard/posts-dashboard').then(m => m.PostsDashboard)
   },

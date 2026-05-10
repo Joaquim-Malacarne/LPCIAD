@@ -1,4 +1,5 @@
 ﻿using LPCIAD.WebApi.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LPCIAD.WebApi.Controllers;
@@ -32,6 +33,7 @@ public class PostsController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize]
     [Consumes("multipart/form-data")]
     public IActionResult CreatePost(
         [FromForm] string contentPt,
@@ -49,6 +51,7 @@ public class PostsController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
+    [Authorize]
     [Consumes("multipart/form-data")]
     public IActionResult UpdatePost(
         int id,
@@ -78,6 +81,7 @@ public class PostsController : ControllerBase
     }
 
     [HttpPatch("{id:int}/ToggleActive")]
+    [Authorize]
     public IActionResult ToggleActive(int id)
     {
         var result = _service.ToggleActive(id);
@@ -89,6 +93,7 @@ public class PostsController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize]
     public IActionResult Delete(int id)
     {
         _service.Delete(id);

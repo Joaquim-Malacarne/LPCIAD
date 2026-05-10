@@ -1,0 +1,100 @@
+<section class="feed-section">
+
+  <!-- Cabeçalho + filtros -->
+  <div class="feed-header">
+    <div class="feed-title-row">
+      <h2 class="feed-title">{{ title | translate:(lang$ | async) }}</h2>
+      <div class="feed-divider"></div>
+    </div>
+
+    <div class="feed-filters">
+
+      <!-- Busca por texto -->
+      <div class="search-box">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+        </svg>
+        <input
+          type="text"
+          class="search-input"
+          [placeholder]="'feed.search_placeholder' | translate:(lang$ | async)"
+          [(ngModel)]="searchText"
+          (ngModelChange)="onSearch()"
+        />
+        <button class="search-clear" *ngIf="searchText" (click)="searchText = ''; onSearch()">✕</button>
+      </div>
+
+      <!-- Filtro por tags -->
+      <div class="tag-filter-row">
+        <button
+          *ngFor="let tag of availableTags"
+          class="tag-chip"
+          [class.tag-chip--active]="isTagSelected(tag)"
+          [style.background]="isTagSelected(tag) ? getTagBg(tag) : ''"
+          [style.color]="isTagSelected(tag) ? getTagColor(tag) : ''"
+          [style.border-color]="isTagSelected(tag) ? getTagColor(tag) : ''"
+          (click)="toggleTag(tag)"
+        >{{ tag }}</button>
+
+        <button class="btn-clear-filters" *ngIf="hasActiveFilters" (click)="clearFilters()">
+          {{ 'feed.clear_filters' | translate:(lang$ | async) }}
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div class="state-container" *ngIf="loading">
+    <div class="spinner"></div>
+    <p class="state-text">{{ 'feed.loading' | translate:(lang$ | async) }}</p>
+  </div>
+
+  <!-- Erro -->
+  <div class="state-container state-error" *ngIf="error && !loading">
+    <p class="state-text">{{ error | translate:(lang$ | async) }}</p>
+  </div>
+
+  <!-- Sem resultados (com filtro ativo) -->
+  <div class="state-container" *ngIf="!loading && !error && filteredPosts.length === 0 && allPosts.length > 0">
+    <p class="state-text">{{ 'feed.no_results' | translate:(lang$ | async) }}</p>
+    <button class="btn-clear-filters" (click)="clearFilters()">{{ 'feed.clear_filters' | translate:(lang$ | async) }}</button>
+  </div>
+
+  <!-- Grid de posts -->
+  <div class="posts-grid" *ngIf="!loading && !error && filteredPosts.length > 0">
+    <article class="post-card" *ngFor="let post of filteredPosts" (click)="goToPost(post.id)">
+
+      <div class="post-image-wrapper">
+        <img
+          *ngIf="getImageUrl(post)"
+          [src]="getImageUrl(post)!"
+          [alt]="post.title"
+          class="post-image"
+        />
+        <div class="post-image-placeholder" *ngIf="!getImageUrl(post)">
+          <span class="placeholder-icon">📄</span>
+        </div>
+      </div>
+
+      <div class="post-content">
+        <div class="post-tags" *ngIf="post.tags && post.tags.length > 0">
+          <span
+            class="post-tag"
+            *ngFor="let tag of post.tags"
+            [style.background]="getTagBg(tag)"
+            [style.color]="getTagColor(tag)"
+          >{{ tag }}</span>
+        </div>
+        <p class="post-date">{{ formatDate(post.date, lang$ | async) }}</p>
+        <h3 class="post-title">{{ post.title }}</h3>
+        <p class="post-description" *ngIf="post.description">{{ post.description }}</p>
+        <button class="btn-read-more" (click)="goToPost(post.id); $event.stopPropagation()">
+          {{ 'feed.read_more' | translate:(lang$ | async) }}
+        </button>
+      </div>
+
+    </article>
+  </div>
+
+</section>

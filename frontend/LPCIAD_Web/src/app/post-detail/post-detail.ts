@@ -1,32 +1,35 @@
-import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { Subscription } from 'rxjs';
+import { skip } from 'rxjs/operators';
 import { marked } from 'marked';
 import { PostService } from '../services/post';
-import { PostListItem } from '../models/post.model';
 import { PostDetailItem } from '../models/post-detail.model';
 import { TAG_COLORS } from '../models/post-tag.model';
+import { PostsFeed } from '../posts-feed/posts-feed';
+import { TranslatePipe } from '../pipes/translate.pipe';
+import { LanguageService } from '../services/language.service';
 
 @Component({
   selector: 'app-post-detail',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, PostsFeed, TranslatePipe],
   templateUrl: './post-detail.html',
   styleUrls: ['./post-detail.css']
 })
-export class PostDetail implements OnInit {
+export class PostDetail implements OnInit, OnDestroy {
 
   post: PostDetailItem | null = null;
-  relatedPosts: PostListItem[] = [];
   loading = true;
   error: string | null = null;
-
-  activeLang: 'pt' | 'en' = 'pt';
-  hasEnglish = false;
   renderedContent: SafeHtml = '';
+  postId = 0;
 
-  private postId = 0;
+  lang$ = inject(LanguageService).currentLang$;
+  private languageService = inject(LanguageService);
+  private langSub?: Subscription;
 
   constructor(
     private route: ActivatedRoute,
@@ -46,10 +49,19 @@ export class PostDetail implements OnInit {
       const id = Number(params.get('id'));
       if (!id) { this.router.navigate(['/']); return; }
       this.postId = id;
-      this.activeLang = 'pt';
-      this.loadPost(id, 'pt');
-      this.loadRelated(id);
+      this.loadPost(id, this.languageService.currentLang);
     });
+
+    // Skip the initial BehaviorSubject emission — paramMap handles the first load
+    this.langSub = this.languageService.currentLang$.pipe(skip(1)).subscribe(lang => {
+      if (this.postId) {
+        this.loadPost(this.postId, lang);
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.langSub?.unsubscribe();
   }
 
   private loadPost(id: number, lang: string): void {
@@ -60,37 +72,17 @@ export class PostDetail implements OnInit {
       next: (data: PostDetailItem) => {
         this.post = data;
         this.renderContent(data.content, data.images, id);
-
-        if (lang === 'pt') {
-          this.postService.getById(id, 'en').subscribe({
-            next: () => { this.hasEnglish = true; },
-            error: () => { this.hasEnglish = false; }
-          });
-        }
-
         this.loading = false;
       },
       error: () => {
-        this.error = 'Não foi possível carregar o post.';
+        this.error = 'post_detail.error';
         this.loading = false;
       }
     });
   }
 
-  private loadRelated(currentId: number): void {
-    this.postService.getAll().subscribe({
-      next: (posts: PostListItem[]) => {
-        this.relatedPosts = posts
-          .filter(p => p.id !== currentId)
-          .slice(0, 3);
-      },
-      error: () => {}
-    });
-  }
-
   private renderContent(markdown: string, images: string[], postId: number): void {
     let md = markdown;
-
     images.forEach(img => {
       const apiUrl = this.postService.getImageUrl(postId, img);
       md = md.replace(
@@ -98,43 +90,17 @@ export class PostDetail implements OnInit {
         `![$1](${apiUrl})`
       );
     });
-
     const html = marked.parse(md) as string;
     this.renderedContent = this.sanitizer.bypassSecurityTrustHtml(html);
-  }
-
-  setLang(lang: 'pt' | 'en'): void {
-    if (lang === this.activeLang) return;
-    this.activeLang = lang;
-    this.loadPost(this.postId, lang);
-  }
-
-  goToPost(id: number): void {
-    this.router.navigate(['/post', id]);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   goBack(): void {
     this.router.navigate(['/']);
   }
 
-  getImageUrl(post: PostListItem): string | null {
-    return post.images?.length > 0
-      ? this.postService.getImageUrl(post.id, post.images[0])
-      : null;
-  }
-
   getCoverUrl(): string | null {
     if (!this.post || this.post.images.length === 0) return null;
     return this.postService.getImageUrl(this.post.id, this.post.images[0]);
-  }
-
-  getExtraImages(): string[] {
-    return this.post ? this.post.images.slice(1) : [];
-  }
-
-  getExtraImageUrl(imageName: string): string {
-    return this.postService.getImageUrl(this.post!.id, imageName);
   }
 
   getTagBg(tag: string): string {
@@ -146,13 +112,9 @@ export class PostDetail implements OnInit {
   }
 
   formatDate(dateStr: string): string {
-    return new Date(dateStr).toLocaleDateString('pt-BR', {
+    const locale = this.languageService.currentLang === 'pt' ? 'pt-BR' : 'en-US';
+    return new Date(dateStr).toLocaleDateString(locale, {
       day: 'numeric', month: 'long', year: 'numeric'
     });
-  }
-
-  extractTitle(content: string): string {
-    const match = content.match(/^#\s+(.+)/m);
-    return match ? match[1].trim() : `Post ${this.postId}`;
   }
 }

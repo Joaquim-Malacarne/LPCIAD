@@ -6,35 +6,35 @@
     <div class="footer-col footer-brand">
       <span class="footer-logo">LPCIAD</span>
       <p class="footer-desc">
-        Laboratório de Projetos de Circuitos Integrados Analógicos e Digitais.
+        {{ 'footer.description' | translate:(lang$ | async) }}
       </p>
       <img src="assets/unisantoslogo.png" alt="UniSantos" class="footer-uni-logo" />
     </div>
 
     <!-- Links rápidos -->
     <div class="footer-col footer-links">
-      <h4 class="footer-col-title">Links Rápidos</h4>
+      <h4 class="footer-col-title">{{ 'footer.quick_links' | translate:(lang$ | async) }}</h4>
       <ul>
-        <li href="https://www.unisantos.br/">Universidade</li>
-        <li>Integrantes</li>
-        <li>Pesquisa</li>
-        <li>Projetos</li>
-        <li>Atividades</li>
-        <li>Parcerias</li>
-        <li>Cursos &amp; Eventos</li>
+        <li>{{ 'nav.university' | translate:(lang$ | async) }}</li>
+        <li>{{ 'nav.members' | translate:(lang$ | async) }}</li>
+        <li>{{ 'nav.research' | translate:(lang$ | async) }}</li>
+        <li>{{ 'nav.projects' | translate:(lang$ | async) }}</li>
+        <li>{{ 'nav.activities' | translate:(lang$ | async) }}</li>
+        <li>{{ 'nav.partnerships' | translate:(lang$ | async) }}</li>
+        <li>{{ 'nav.courses_events' | translate:(lang$ | async) }}</li>
       </ul>
     </div>
 
     <!-- Contato -->
     <div class="footer-col footer-contact">
-      <h4 class="footer-col-title">Contato</h4>
+      <h4 class="footer-col-title">{{ 'footer.contact' | translate:(lang$ | async) }}</h4>
 
       <div class="contact-item">
         <span class="contact-icon">📍</span>
         <div>
-          <strong>Campus Dom Idílio José Soares</strong><br />
-          Av. Conselheiro Nébias, 300<br />
-          Santos – SP, Brasil
+          <strong>{{ 'footer.campus' | translate:(lang$ | async) }}</strong><br />
+          {{ 'footer.address' | translate:(lang$ | async) }}<br />
+          {{ 'footer.city' | translate:(lang$ | async) }}
         </div>
       </div>
 
@@ -45,7 +45,7 @@
 
       <div class="contact-item">
         <span class="contact-icon">🕐</span>
-        <span>Seg – Sex: 8h às 18h</span>
+        <span>{{ 'footer.schedule' | translate:(lang$ | async) }}</span>
       </div>
 
       <div class="contact-item">
@@ -58,7 +58,7 @@
 
     <!-- Mapa -->
     <div class="footer-col footer-map">
-      <h4 class="footer-col-title">Localização</h4>
+      <h4 class="footer-col-title">{{ 'footer.location' | translate:(lang$ | async) }}</h4>
       <iframe
         src="https://maps.google.com/maps?q=Universidade+Cat%C3%B3lica+de+Santos%2C+Av.+Conselheiro+N%C3%A9bias%2C+300%2C+Santos%2C+SP%2C+Brasil&t=&z=16&ie=UTF8&iwloc=&output=embed"
         width="100%"
@@ -67,13 +67,13 @@
         loading="lazy"
         referrerpolicy="no-referrer-when-downgrade">
       </iframe>
-      <p class="map-caption">Av. Conselheiro Nébias, 300 · Santos/SP</p>
+      <p class="map-caption">{{ 'footer.map_caption' | translate:(lang$ | async) }}</p>
     </div>
 
   </div>
 
   <div class="footer-bottom">
-    <span>© {{ currentYear }} LPCIAD – Universidade Católica de Santos. Todos os direitos reservados.</span>
+    <span>© {{ currentYear }} LPCIAD – Universidade Católica de Santos. {{ 'footer.rights' | translate:(lang$ | async) }}</span>
   </div>
 
 </footer>

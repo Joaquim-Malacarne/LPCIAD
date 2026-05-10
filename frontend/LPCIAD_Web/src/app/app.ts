@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { RouterOutlet, RouterModule } from '@angular/router';
 import { Header } from './header/header';
 import { Footer } from './footer/footer';
+import { PageLoader } from './page-loader/page-loader';
 import { LanguageSelector } from './language-selector/language-selector';
 
 // Angular Material
@@ -19,6 +20,7 @@ import { FormsModule } from '@angular/forms';
     RouterModule,
     Header,
     Footer,
+    PageLoader,
     LanguageSelector,
     MatMenuModule,
     MatButtonModule,
@@ -26,6 +28,7 @@ import { FormsModule } from '@angular/forms';
     FormsModule,
   ],
   template: `
+    <app-page-loader></app-page-loader>
     <app-header></app-header>
     <router-outlet></router-outlet>
     <app-footer></app-footer>

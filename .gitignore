@@ -400,5 +400,8 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 
-#Posts 
+#Posts
 backend/LPCIAD.WebApi/Posts/*
+
+#Integrantes
+backend/LPCIAD.WebApi/Integrantes/*

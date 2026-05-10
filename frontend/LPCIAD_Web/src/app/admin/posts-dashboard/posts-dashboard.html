@@ -11,23 +11,23 @@
     <!-- Cabeçalho da página -->
     <div class="dashboard-topbar">
         <div class="topbar-left">
-            <span class="topbar-title">Gerenciar Posts</span>
-            <span class="topbar-count" *ngIf="!loading">{{ posts.length }} publicação(ões)</span>
+            <span class="topbar-title">{{ 'admin.manage_posts' | translate:(lang$ | async) }}</span>
+            <span class="topbar-count" *ngIf="!loading">{{ posts.length }} {{ 'admin.publication_count' | translate:(lang$ | async) }}</span>
         </div>
         <div class="topbar-right">
-            <button class="btn-primary" (click)="onNewPost()">+ Novo Post</button>
+            <button class="btn-primary" (click)="onNewPost()">{{ 'admin.new_post' | translate:(lang$ | async) }}</button>
         </div>
     </div>
 
     <!-- Loading -->
     <div class="feedback-state" *ngIf="loading">
-        <span class="loading-text">Carregando posts...</span>
+        <span class="loading-text">{{ 'admin.loading' | translate:(lang$ | async) }}</span>
     </div>
 
     <!-- Erro -->
     <div class="feedback-state error-state" *ngIf="error && !loading">
         <span>{{ error }}</span>
-        <button class="btn-primary" (click)="loadPosts()">Tentar novamente</button>
+        <button class="btn-primary" (click)="loadPosts()">{{ 'admin.retry' | translate:(lang$ | async) }}</button>
     </div>
 
     <!-- Tabela de posts -->
@@ -36,10 +36,10 @@
             <thead>
                 <tr>
                     <th class="col-id">#</th>
-                    <th class="col-title">Título</th>
-                    <th class="col-desc">Descrição</th>
-                    <th class="col-date">Data</th>
-                    <th class="col-actions">Ações</th>
+                    <th class="col-title">{{ 'admin.col_title' | translate:(lang$ | async) }}</th>
+                    <th class="col-desc">{{ 'admin.col_desc' | translate:(lang$ | async) }}</th>
+                    <th class="col-date">{{ 'admin.col_date' | translate:(lang$ | async) }}</th>
+                    <th class="col-actions">{{ 'admin.col_actions' | translate:(lang$ | async) }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -58,11 +58,12 @@
                     </td>
                     <td class="col-date">{{ post.date | date:'dd/MM/yyyy' }}</td>
                     <td class="col-actions">
-                        <button class="btn-action btn-edit" (click)="onEdit(post)">Editar</button>
+                        <button class="btn-action btn-edit" (click)="onEdit(post)">{{ 'admin.edit' | translate:(lang$ | async) }}</button>
                         <button class="btn-action" [class.btn-active]="post.isActive"
                             [class.btn-inactive]="!post.isActive"
-                            [title]="post.isActive ? 'Desativar post' : 'Ativar post'" (click)="onToggleActive(post)">
-                            {{ post.isActive ? '✓ Ativo' : '✗ Inativo' }}
+                            [title]="post.isActive ? ('admin.disable_post' | translate:(lang$ | async)) : ('admin.enable_post' | translate:(lang$ | async))"
+                            (click)="onToggleActive(post)">
+                            {{ post.isActive ? ('admin.active' | translate:(lang$ | async)) : ('admin.inactive' | translate:(lang$ | async)) }}
                         </button>
                     </td>
                 </tr>
@@ -70,8 +71,8 @@
         </table>
 
         <div class="empty-state" *ngIf="posts.length === 0">
-            <p>Nenhum post encontrado.</p>
-            <button class="btn-primary" (click)="onNewPost()">Criar o primeiro post</button>
+            <p>{{ 'admin.no_posts' | translate:(lang$ | async) }}</p>
+            <button class="btn-primary" (click)="onNewPost()">{{ 'admin.create_first' | translate:(lang$ | async) }}</button>
         </div>
     </div>
 

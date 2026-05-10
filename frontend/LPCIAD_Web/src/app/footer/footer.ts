@@ -1,18 +1,21 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { TranslatePipe } from '../pipes/translate.pipe';
+import { LanguageService } from '../services/language.service';
 
 @Component({
   selector: 'app-footer',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslatePipe],
   templateUrl: './footer.html',
   styleUrls: ['./footer.css']
 })
 export class Footer implements OnInit {
   visible = true;
   currentYear = new Date().getFullYear();
+  lang$ = inject(LanguageService).currentLang$;
 
   constructor(private router: Router) {}
 

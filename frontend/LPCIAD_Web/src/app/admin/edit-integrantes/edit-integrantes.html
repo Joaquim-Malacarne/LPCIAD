@@ -1,0 +1,84 @@
+<!-- Toast -->
+<div class="toast" [class.toast--visible]="toastVisible" [class.toast--success]="toastSuccess">
+  <span class="toast-icon">{{ toastSuccess ? '✓' : '✕' }}</span>
+  <span class="toast-text">{{ toastMessage }}</span>
+</div>
+
+<div class="editor-wrapper">
+
+  <!-- Loading inicial -->
+  <div class="loading-overlay" *ngIf="loading">
+    <div class="spinner"></div>
+    <span>{{ 'edit_integrantes.loading' | translate:(lang$ | async) }}</span>
+  </div>
+
+  <!-- Barra de ações -->
+  <div class="actions-bar" *ngIf="!loading">
+    <span class="page-label">{{ 'edit_integrantes.label' | translate:(lang$ | async) }}</span>
+    <div class="actions-bar-right">
+      <button class="btn-secondary" (click)="onClear()" [disabled]="saving">{{ 'edit_integrantes.clear_lang' | translate:(lang$ | async) }}</button>
+      <button class="btn-primary" [disabled]="saving" (click)="onSave()">
+        {{ saving ? ('edit_integrantes.saving' | translate:(lang$ | async)) : ('edit_integrantes.save' | translate:(lang$ | async)) }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Editor Split -->
+  <div class="editor-split" *ngIf="!loading">
+
+    <div
+      class="editor-pane"
+      [class.drag-over]="isDragOver"
+      (dragover)="onDragOver($event)"
+      (dragleave)="onDragLeave($event)"
+      (drop)="onDrop($event)"
+    >
+      <div class="pane-header">
+        <span class="pane-label">{{ 'edit_integrantes.editor' | translate:(lang$ | async) }}</span>
+        <span class="pane-hint">{{ 'edit_integrantes.hint' | translate:(lang$ | async) }}</span>
+        <div class="lang-toggle">
+          <button class="lang-btn" [class.active]="activeLang === 'pt'" (click)="setLang('pt')">PT</button>
+          <button class="lang-btn" [class.active]="activeLang === 'en'" (click)="setLang('en')">EN</button>
+        </div>
+      </div>
+
+      <textarea
+        #editorTextarea
+        class="editor-textarea"
+        [(ngModel)]="activeMarkdown"
+        [placeholder]="activeLang === 'pt' ? ('edit_integrantes.placeholder_pt' | translate:(lang$ | async)) : ('edit_integrantes.placeholder_en' | translate:(lang$ | async))"
+        spellcheck="false"
+        (focus)="onEditorFocus()"
+        (blur)="onEditorBlur()"
+      ></textarea>
+
+      <div class="drag-hint" *ngIf="isDragOver">
+        <span class="drag-hint-text">{{ 'edit_integrantes.drop_hint' | translate:(lang$ | async) }}</span>
+      </div>
+    </div>
+
+    <div class="pane-divider"></div>
+
+    <div class="preview-pane">
+      <div class="pane-header">
+        <span class="pane-label">{{ 'edit_integrantes.preview' | translate:(lang$ | async) }}</span>
+        <span class="pane-hint">{{ activeLang === 'pt' ? ('edit_integrantes.lang_pt' | translate:(lang$ | async)) : ('edit_integrantes.lang_en' | translate:(lang$ | async)) }}</span>
+      </div>
+      <div class="preview-body">
+        <div *ngIf="activeMarkdown.trim(); else empty" [innerHTML]="renderedMarkdown"></div>
+        <ng-template #empty>
+          <p class="preview-empty">{{ 'edit_integrantes.preview_empty' | translate:(lang$ | async) }}</p>
+        </ng-template>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Rodapé stats -->
+  <div class="editor-footer" *ngIf="!loading">
+    <span><strong>{{ wordCount }}</strong> {{ 'edit_integrantes.words' | translate:(lang$ | async) }}</span>
+    <span><strong>{{ charCount }}</strong> {{ 'edit_integrantes.chars' | translate:(lang$ | async) }}</span>
+    <span><strong>{{ lineCount }}</strong> {{ 'edit_integrantes.lines' | translate:(lang$ | async) }}</span>
+  </div>
+
+</div>
