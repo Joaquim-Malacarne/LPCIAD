@@ -1,3 +1,11 @@
+<div class="toast"
+  [class.toast--success]="toastType === 'success'"
+  [class.toast--error]="toastType === 'error'"
+  [class.toast--visible]="toastVisible">
+  <span class="toast-icon">{{ toastType === 'success' ? '✓' : '✕' }}</span>
+  <span class="toast-text">{{ toastMessage }}</span>
+</div>
+
 <div class="dashboard-wrapper">
 
     <!-- Cabeçalho da página -->

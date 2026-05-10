@@ -17,32 +17,32 @@
   </div>
 
   <!-- Carrossel -->
-  <div class="gallery-swiper swiper" *ngIf="!loading && !error && slides.length > 0">
-    <div class="swiper-wrapper">
-      <div class="swiper-slide" *ngFor="let slide of slides">
-        <div class="slide-inner">
-          <img [src]="slide.imageUrl" [alt]="slide.title" class="slide-image" />
-          <div class="slide-overlay"></div>
-          <div class="slide-content">
-            <h2 class="slide-title">{{ slide.title }}</h2>
-            <p class="slide-desc" *ngIf="slide.description">{{ slide.description }}</p>
-            <span class="slide-date">{{ slide.date | date:'dd \'de\' MMMM \'de\' yyyy':'':'pt-BR' }}</span>
+  <ng-container *ngIf="!loading && !error && slides.length > 0">
+
+    <!-- Carrossel -->
+    <div class="gallery-swiper swiper">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide" *ngFor="let slide of slides">
+          <div class="slide-inner">
+            <img [src]="slide.imageUrl" [alt]="slide.title" class="slide-image" />
+            <div class="slide-overlay"></div>
+            <div class="slide-content">
+              <h2 class="slide-title">{{ slide.title }}</h2>
+              <p class="slide-desc" *ngIf="slide.description">{{ slide.description }}</p>
+              <span class="slide-date">{{ slide.date | date:"dd 'de' MMMM 'de' yyyy":'':'pt-BR' }}</span>
+            </div>
           </div>
         </div>
       </div>
+
+      <!-- Navegação -->
+      <div class="swiper-button-prev"></div>
+      <div class="swiper-button-next"></div>
+
+      <!-- Paginação -->
+      <div class="swiper-pagination"></div>
     </div>
 
-    <!-- Navegação -->
-    <div class="swiper-button-prev"></div>
-    <div class="swiper-button-next"></div>
-
-    <!-- Paginação -->
-    <div class="swiper-pagination"></div>
-
-    <!-- Contador de slides -->
-    <div class="slide-counter">
-      <span *ngFor="let s of slides; let i = index" class="counter-dot"></span>
-    </div>
-  </div>
+  </ng-container>
 
 </section>

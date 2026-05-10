@@ -6,6 +6,7 @@ import { marked } from 'marked';
 import { PostService } from '../services/post';
 import { PostListItem } from '../models/post.model';
 import { PostDetailItem } from '../models/post-detail.model';
+import { TAG_COLORS } from '../models/post-tag.model';
 
 @Component({
   selector: 'app-post-detail',
@@ -134,6 +135,14 @@ export class PostDetail implements OnInit {
 
   getExtraImageUrl(imageName: string): string {
     return this.postService.getImageUrl(this.post!.id, imageName);
+  }
+
+  getTagBg(tag: string): string {
+    return TAG_COLORS[tag]?.bg ?? '#e8eef3';
+  }
+
+  getTagColor(tag: string): string {
+    return TAG_COLORS[tag]?.text ?? '#555';
   }
 
   formatDate(dateStr: string): string {

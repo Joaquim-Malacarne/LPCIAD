@@ -5,4 +5,5 @@ export interface PostListItem {
   date: string;
   images: string[];
   isActive: boolean;
+  tags: string[];
 }

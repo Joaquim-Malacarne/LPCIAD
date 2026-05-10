@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterOutlet, RouterModule } from '@angular/router';
 import { Header } from './header/header';
+import { Footer } from './footer/footer';
 import { LanguageSelector } from './language-selector/language-selector';
 
 // Angular Material
@@ -17,6 +18,7 @@ import { FormsModule } from '@angular/forms';
     RouterOutlet,
     RouterModule,
     Header,
+    Footer,
     LanguageSelector,
     MatMenuModule,
     MatButtonModule,
@@ -26,6 +28,7 @@ import { FormsModule } from '@angular/forms';
   template: `
     <app-header></app-header>
     <router-outlet></router-outlet>
+    <app-footer></app-footer>
     <app-language-selector></app-language-selector>
   `
 })

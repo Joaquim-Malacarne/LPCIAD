@@ -37,14 +37,15 @@ public class PostsController : ControllerBase
         [FromForm] string contentPt,
         [FromForm] string? contentEn,
         [FromForm] string? description,
+        [FromForm] List<string>? tags,
         [FromForm] List<IFormFile> images)
     {
-        var result = _service.Create(contentPt, contentEn, description, images);
+        var result = _service.Create(contentPt, contentEn, description, tags, images);
 
         if (!result.Success)
             return BadRequest(result.Error);
 
-        return Ok("Post criado com sucesso");
+        return Ok(new { id = result.Id });
     }
 
     [HttpPut("{id:int}")]
@@ -54,9 +55,10 @@ public class PostsController : ControllerBase
         [FromForm] string contentPt,
         [FromForm] string? contentEn,
         [FromForm] string? description,
+        [FromForm] List<string>? tags,
         [FromForm] List<IFormFile> images)
     {
-        var result = _service.Update(id, contentPt, contentEn, description, images);
+        var result = _service.Update(id, contentPt, contentEn, description, tags, images);
 
         if (!result.Success)
             return BadRequest(result.Error);
@@ -73,6 +75,17 @@ public class PostsController : ControllerBase
             return NotFound("Imagem não encontrada");
 
         return File(result.File, result.ContentType!);
+    }
+
+    [HttpPatch("{id:int}/ToggleActive")]
+    public IActionResult ToggleActive(int id)
+    {
+        var result = _service.ToggleActive(id);
+
+        if (!result.Success)
+            return BadRequest(result.Error);
+
+        return Ok();
     }
 
     [HttpDelete("{id}")]

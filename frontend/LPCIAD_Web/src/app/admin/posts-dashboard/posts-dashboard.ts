@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 import { PostListItem } from '../../models/post.model';
 import { PostService } from '../../services/post';
 
@@ -10,16 +12,38 @@ import { PostService } from '../../services/post';
   templateUrl: './posts-dashboard.html',
   styleUrls: ['./posts-dashboard.css']
 })
-export class PostsDashboard implements OnInit {
+export class PostsDashboard implements OnInit, OnDestroy {
 
   posts: PostListItem[] = [];
   loading: boolean = false;
   error: string | null = null;
 
-  constructor(private postService: PostService) { }
+  toastMessage: string = '';
+  toastType: 'success' | 'error' = 'success';
+  toastVisible: boolean = false;
+  private toastTimer: ReturnType<typeof setTimeout> | null = null;
+
+  constructor(private postService: PostService, private router: Router) {}
 
   ngOnInit(): void {
     this.loadPosts();
+
+    const state = history.state as { successMessage?: string };
+    if (state?.successMessage) {
+      this.showToast(state.successMessage, 'success');
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.toastTimer) clearTimeout(this.toastTimer);
+  }
+
+  showToast(message: string, type: 'success' | 'error' = 'success'): void {
+    if (this.toastTimer) clearTimeout(this.toastTimer);
+    this.toastMessage = message;
+    this.toastType = type;
+    this.toastVisible = true;
+    this.toastTimer = setTimeout(() => (this.toastVisible = false), 4000);
   }
 
   loadPosts(): void {
@@ -31,10 +55,9 @@ export class PostsDashboard implements OnInit {
         this.posts = data;
         this.loading = false;
       },
-      error: (err: any) => {
+      error: () => {
         this.error = 'Erro ao carregar os posts. Verifique se a API está rodando.';
         this.loading = false;
-        console.error(err);
       }
     });
   }
@@ -48,10 +71,20 @@ export class PostsDashboard implements OnInit {
   }
 
   onNewPost(): void {
-    console.log('Novo post');
+    this.router.navigate(['/admin/add-post']);
   }
 
   onToggleActive(post: PostListItem): void {
-    post.isActive = !post.isActive;
+    this.postService.toggleActive(post.id).subscribe({
+      next: () => {
+        post.isActive = !post.isActive;
+      },
+      error: (err: unknown) => {
+        const msg = err instanceof HttpErrorResponse && typeof err.error === 'string'
+          ? err.error
+          : 'Erro ao alterar o status do post.';
+        this.showToast(msg, 'error');
+      }
+    });
   }
 }

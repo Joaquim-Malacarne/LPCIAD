@@ -3,6 +3,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
 import { PostService } from '../services/post';
 import { PostListItem } from '../models/post.model';
+import { TAG_COLORS } from '../models/post-tag.model';
 
 @Component({
   selector: 'app-post-list',
@@ -27,7 +28,7 @@ export class PostList implements OnInit {
     if (isPlatformBrowser(this.platformId)) {
       this.postService.getAll().subscribe({
         next: (data: PostListItem[]) => {
-          this.posts = data;
+          this.posts = data.filter(p => p.isActive);
           this.loading = false;
         },
         error: () => {
@@ -49,6 +50,14 @@ export class PostList implements OnInit {
     return post.images?.length > 0
       ? this.postService.getImageUrl(post.id, post.images[0])
       : null;
+  }
+
+  getTagBg(tag: string): string {
+    return TAG_COLORS[tag]?.bg ?? '#e8eef3';
+  }
+
+  getTagColor(tag: string): string {
+    return TAG_COLORS[tag]?.text ?? '#555';
   }
 
   formatDate(dateStr: string): string {

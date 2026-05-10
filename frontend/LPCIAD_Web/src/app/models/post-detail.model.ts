@@ -3,4 +3,5 @@ export interface PostDetailItem {
   date: string;
   content: string;
   images: string[];
+  tags: string[];
 }

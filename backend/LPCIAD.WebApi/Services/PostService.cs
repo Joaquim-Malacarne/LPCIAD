@@ -1,4 +1,4 @@
-﻿using LPCIAD.WebApi.Dtos.Posts;
+using LPCIAD.WebApi.Dtos.Posts;
 using Microsoft.AspNetCore.Http;
 using System.Text.Json;
 
@@ -30,9 +30,6 @@ public class PostService : IPostService
 
                 var metadata = ReadMetadata(id, ptPath);
 
-                if (metadata.IsActive == false)
-                    return null;
-
                 return new PostListItemResponse
                 {
                     Id = id,
@@ -40,7 +37,8 @@ public class PostService : IPostService
                     Description = metadata.Description,
                     Date = metadata.CreatedAt,
                     Images = GetImages(id),
-                    IsActive = metadata.IsActive
+                    IsActive = metadata.IsActive,
+                    Tags = metadata.Tags
                 };
             })
             .Where(p => p != null)
@@ -66,25 +64,27 @@ public class PostService : IPostService
             Id = id,
             Date = metadata.CreatedAt,
             Content = content,
-            Images = GetImages(id)
+            Images = GetImages(id),
+            Tags = metadata.Tags
         };
     }
 
-    public (bool Success, string? Error) Create(
+    public (bool Success, int Id, string? Error) Create(
         string contentPt,
         string? contentEn,
         string? description,
+        List<string>? tags,
         List<IFormFile> images)
     {
         if (string.IsNullOrWhiteSpace(contentPt))
-            return (false, "Conteúdo em português é obrigatório");
+            return (false, 0, "Conteúdo em português é obrigatório");
 
         EnsureRoot();
 
         var id = GetNextId();
-        SavePost(id, contentPt, contentEn, description, images, DateTime.UtcNow, true);
+        SavePost(id, contentPt, contentEn, description, tags, images, DateTime.UtcNow, isNew: true, isActive: true);
 
-        return (true, null);
+        return (true, id, null);
     }
 
     public (bool Success, string? Error) Update(
@@ -92,6 +92,7 @@ public class PostService : IPostService
         string contentPt,
         string? contentEn,
         string? description,
+        List<string>? tags,
         List<IFormFile> images)
     {
         if (string.IsNullOrWhiteSpace(contentPt))
@@ -101,7 +102,18 @@ public class PostService : IPostService
             return (false, "Post não encontrado");
 
         var metadata = ReadMetadata(id, GetPtPath(id));
-        SavePost(id, contentPt, contentEn, description, images, metadata.CreatedAt, false);
+        SavePost(id, contentPt, contentEn, description, tags, images, metadata.CreatedAt, isNew: false, isActive: metadata.IsActive);
+
+        return (true, null);
+    }
+
+    public (bool Success, string? Error) ToggleActive(int id)
+    {
+        if (!Directory.Exists(GetPostFolder(id)))
+            return (false, "Post não encontrado");
+
+        var metadata = ReadMetadata(id, GetPtPath(id));
+        WriteMetadata(id, metadata.Description, metadata.Tags, metadata.CreatedAt, !metadata.IsActive);
 
         return (true, null);
     }
@@ -122,21 +134,8 @@ public class PostService : IPostService
         if (!Directory.Exists(folder))
             throw new Exception("Post não encontrado");
 
-        var metadataPath = Path.Combine(folder, "metadata.json");
-        if (!File.Exists(metadataPath))
-            throw new Exception("Metadata não encontrado");
-
-        var metadataJson = File.ReadAllText(metadataPath);
-        var metadata = JsonSerializer.Deserialize<dynamic>(metadataJson);
-
-        metadata.IsActive = false;
-
-        var updatedJson = JsonSerializer.Serialize(metadata, new JsonSerializerOptions
-        {
-            WriteIndented = true
-        });
-
-        File.WriteAllText(metadataPath, updatedJson);
+        var metadata = ReadMetadata(id, GetPtPath(id));
+        WriteMetadata(id, metadata.Description, metadata.Tags, metadata.CreatedAt, false);
     }
 
     private void SavePost(
@@ -144,9 +143,11 @@ public class PostService : IPostService
         string contentPt,
         string? contentEn,
         string? description,
+        List<string>? tags,
         List<IFormFile> images,
         DateTime createdAt,
-        bool isNew)
+        bool isNew,
+        bool isActive)
     {
         var folder = GetPostFolder(id);
         var imagesFolder = Path.Combine(folder, "images");
@@ -162,9 +163,9 @@ public class PostService : IPostService
         else if (System.IO.File.Exists(enPath))
             System.IO.File.Delete(enPath);
 
-        WriteMetadata(id, description, createdAt);
+        WriteMetadata(id, description, tags, createdAt, isActive);
 
-        if (!isNew)
+        if (!isNew && images.Count > 0)
             ClearDirectory(imagesFolder);
 
         foreach (var image in images)
@@ -209,12 +210,13 @@ public class PostService : IPostService
 
         return null;
     }
-    private (DateTime CreatedAt, string? Description, bool IsActive) ReadMetadata(int id, string fallbackPath)
+
+    private (DateTime CreatedAt, string? Description, bool IsActive, List<string> Tags) ReadMetadata(int id, string fallbackPath)
     {
         var path = Path.Combine(GetPostFolder(id), "metadata.json");
 
         if (!System.IO.File.Exists(path))
-            return (System.IO.File.GetCreationTimeUtc(fallbackPath), null, true);
+            return (System.IO.File.GetCreationTimeUtc(fallbackPath), null, true, new());
 
         try
         {
@@ -232,19 +234,23 @@ public class PostService : IPostService
 
             var isActive = doc.RootElement.TryGetProperty("isActive", out var a)
                 ? a.GetBoolean()
-                : true; // se não existir, considera ativo
+                : true;
 
-            return (createdAt, description, isActive);
+            var tags = doc.RootElement.TryGetProperty("tags", out var t) && t.ValueKind == JsonValueKind.Array
+                ? t.EnumerateArray().Select(e => e.GetString()!).Where(s => s != null).ToList()
+                : new List<string>();
+
+            return (createdAt, description, isActive, tags);
         }
         catch
         {
-            return (System.IO.File.GetCreationTimeUtc(fallbackPath), null, true);
+            return (System.IO.File.GetCreationTimeUtc(fallbackPath), null, true, new());
         }
     }
 
-    private void WriteMetadata(int id, string? description, DateTime createdAt)
+    private void WriteMetadata(int id, string? description, List<string>? tags, DateTime createdAt, bool isActive)
     {
-        var metadata = new { description, createdAt };
+        var metadata = new { description, createdAt, isActive, tags = tags ?? new List<string>() };
 
         System.IO.File.WriteAllText(
             Path.Combine(GetPostFolder(id), "metadata.json"),
@@ -303,5 +309,4 @@ public class PostService : IPostService
             _ => "application/octet-stream"
         };
     }
-
 }

@@ -2,23 +2,37 @@
   <div class="main-bar">
 
     <div class="logo-container">
-      <a class="d-flex">
+      <a class="d-flex" routerLink="/">
         <span class="logo-lpciad">LPCIAD</span>
         <span class="separator">&nbsp;|&nbsp;&nbsp;&nbsp;</span>
       </a>
-    <img src="assets/unisantoslogo.png">
+      <img src="assets/unisantoslogo.png" alt="UniSantos" />
     </div>
 
     <ul class="nav-menu">
-      <li>UNIVERSIDADE</li>
-      <li>INTEGRANTES</li>
-      <li>PESQUISA</li>
-      <li>PROJETOS</li>
-      <li>ATIVIDADES</li>
-      <li>PARCERIAS</li>
-      <li>CURSOS & EVENTOS</li>
+      <li>
+        <a href="https://www.unisantos.br/" target="_blank" rel="noopener noreferrer">UNIVERSIDADE</a>
+      </li>
+      <li>
+        <a routerLink="/integrantes">INTEGRANTES</a>
+      </li>
+      <li>
+        <a routerLink="/" fragment="pesquisa">PESQUISA</a>
+      </li>
+      <li>
+        <a routerLink="/" fragment="projetos">PROJETOS</a>
+      </li>
+      <li>
+        <a routerLink="/" fragment="atividades">ATIVIDADES</a>
+      </li>
+      <li>
+        <a routerLink="/" fragment="parcerias">PARCERIAS</a>
+      </li>
+      <li>
+        <a routerLink="/" fragment="cursos-eventos">CURSOS &amp; EVENTOS</a>
+      </li>
     </ul>
-    
-<app-language-selector></app-language-selector>
+
+    <app-language-selector></app-language-selector>
   </div>
 </header>

@@ -1,0 +1,79 @@
+<footer class="app-footer" *ngIf="visible">
+
+  <div class="footer-main">
+
+    <!-- Brand -->
+    <div class="footer-col footer-brand">
+      <span class="footer-logo">LPCIAD</span>
+      <p class="footer-desc">
+        Laboratório de Projetos de Circuitos Integrados Analógicos e Digitais.
+      </p>
+      <img src="assets/unisantoslogo.png" alt="UniSantos" class="footer-uni-logo" />
+    </div>
+
+    <!-- Links rápidos -->
+    <div class="footer-col footer-links">
+      <h4 class="footer-col-title">Links Rápidos</h4>
+      <ul>
+        <li href="https://www.unisantos.br/">Universidade</li>
+        <li>Integrantes</li>
+        <li>Pesquisa</li>
+        <li>Projetos</li>
+        <li>Atividades</li>
+        <li>Parcerias</li>
+        <li>Cursos &amp; Eventos</li>
+      </ul>
+    </div>
+
+    <!-- Contato -->
+    <div class="footer-col footer-contact">
+      <h4 class="footer-col-title">Contato</h4>
+
+      <div class="contact-item">
+        <span class="contact-icon">📍</span>
+        <div>
+          <strong>Campus Dom Idílio José Soares</strong><br />
+          Av. Conselheiro Nébias, 300<br />
+          Santos – SP, Brasil
+        </div>
+      </div>
+
+      <div class="contact-item">
+        <span class="contact-icon">✉️</span>
+        <span>lcm@unisantos.br</span>
+      </div>
+
+      <div class="contact-item">
+        <span class="contact-icon">🕐</span>
+        <span>Seg – Sex: 8h às 18h</span>
+      </div>
+
+      <div class="contact-item">
+        <span class="contact-icon">🌐</span>
+        <a style="color: white;" href="https://www.unisantos.br/" target="_blank">
+          https://www.unisantos.br
+        </a>
+      </div>
+    </div>
+
+    <!-- Mapa -->
+    <div class="footer-col footer-map">
+      <h4 class="footer-col-title">Localização</h4>
+      <iframe
+        src="https://maps.google.com/maps?q=Universidade+Cat%C3%B3lica+de+Santos%2C+Av.+Conselheiro+N%C3%A9bias%2C+300%2C+Santos%2C+SP%2C+Brasil&t=&z=16&ie=UTF8&iwloc=&output=embed"
+        width="100%"
+        height="190"
+        allowfullscreen=""
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
+      <p class="map-caption">Av. Conselheiro Nébias, 300 · Santos/SP</p>
+    </div>
+
+  </div>
+
+  <div class="footer-bottom">
+    <span>© {{ currentYear }} LPCIAD – Universidade Católica de Santos. Todos os direitos reservados.</span>
+  </div>
+
+</footer>

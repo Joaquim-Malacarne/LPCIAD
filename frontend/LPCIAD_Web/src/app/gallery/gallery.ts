@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { Component, Inject, OnInit, OnDestroy, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Swiper } from 'swiper';
 import { Navigation, Pagination, Autoplay } from 'swiper/modules';
@@ -19,10 +19,13 @@ interface GallerySlide {
   templateUrl: './gallery.html',
   styleUrls: ['./gallery.css']
 })
-export class Gallery implements OnInit {
+export class Gallery implements OnInit, OnDestroy {
+
   slides: GallerySlide[] = [];
   loading = true;
   error = false;
+
+  private swiperInstance: Swiper | null = null;
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -32,18 +35,16 @@ export class Gallery implements OnInit {
   ngOnInit(): void {
     this.postService.getAll().subscribe({
       next: (posts) => {
-        const top5 = posts
+        this.slides = posts
           .filter(p => p.isActive && p.images && p.images.length > 0)
           .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-          .slice(0, 5);
-
-        this.slides = top5.map(p => ({
-          postId: p.id,
-          title: p.title,
-          description: p.description,
-          date: p.date,
-          imageUrl: this.postService.getImageUrl(p.id, p.images[0])
-        }));
+          .map(p => ({
+            postId: p.id,
+            title: p.title,
+            description: p.description,
+            date: p.date,
+            imageUrl: this.postService.getImageUrl(p.id, p.images[0])
+          }));
 
         this.loading = false;
 
@@ -58,8 +59,20 @@ export class Gallery implements OnInit {
     });
   }
 
+  ngOnDestroy(): void {
+    this.swiperInstance?.destroy(true, true);
+  }
+
+
   private initSwiper(): void {
-    new Swiper('.gallery-swiper', {
+    if (this.swiperInstance) {
+      this.swiperInstance.destroy(true, true);
+      this.swiperInstance = null;
+    }
+
+    if (this.slides.length === 0) return;
+
+    this.swiperInstance = new Swiper('.gallery-swiper', {
       modules: [Navigation, Pagination, Autoplay],
       loop: this.slides.length > 1,
       slidesPerView: 1,

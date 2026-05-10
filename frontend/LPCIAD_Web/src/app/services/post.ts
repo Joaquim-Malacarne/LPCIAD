@@ -23,15 +23,15 @@ export class PostService {
     return this.http.get<any>(`${this.apiUrl}/${id}/Language/${lang}`);
   }
 
-  // cria um novo post com conteúdo em PT, EN opcional, descrição e imagens
-  create(contentPt: string, contentEn: string, description: string, images: File[]): Observable<any> {
-    const form = this.buildFormData(contentPt, contentEn, description, images);
-    return this.http.post(this.apiUrl, form, { responseType: 'text' });
+  // cria um novo post com conteúdo em PT, EN opcional, descrição, tags e imagens
+  create(contentPt: string, contentEn: string, description: string, tags: string[], images: File[]): Observable<{ id: number }> {
+    const form = this.buildFormData(contentPt, contentEn, description, tags, images);
+    return this.http.post<{ id: number }>(this.apiUrl, form);
   }
 
   // atualiza um post existente pelo id
-  update(id: number, contentPt: string, contentEn: string, description: string, images: File[]): Observable<any> {
-    const form = this.buildFormData(contentPt, contentEn, description, images);
+  update(id: number, contentPt: string, contentEn: string, description: string, tags: string[], images: File[]): Observable<any> {
+    const form = this.buildFormData(contentPt, contentEn, description, tags, images);
     return this.http.put(`${this.apiUrl}/${id}`, form, { responseType: 'text' });
   }
 
@@ -40,17 +40,23 @@ export class PostService {
     return `${this.apiUrl}/${id}/Image/${imageName}`;
   }
 
+  // inverte o isActive de um post
+  toggleActive(id: number): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/${id}/ToggleActive`, {}, { responseType: 'text' });
+  }
+
   // remove um post pelo id
   delete(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`, { responseType: 'text' });
   }
 
   // monta o FormData para envio multipart (usado no create e update)
-  private buildFormData(contentPt: string, contentEn: string, description: string, images: File[]): FormData {
+  private buildFormData(contentPt: string, contentEn: string, description: string, tags: string[], images: File[]): FormData {
     const form = new FormData();
     form.append('contentPt', contentPt);
     form.append('contentEn', contentEn ?? '');
     form.append('description', description ?? '');
+    tags.forEach(tag => form.append('tags', tag));
     images.forEach(img => form.append('images', img, img.name));
     return form;
   }

@@ -6,4 +6,5 @@ public class PostDetailResponse
     public DateTime Date { get; set; }
     public string Content { get; set; } = String.Empty;
     public List<string> Images { get; set; } = new();
+    public List<string> Tags { get; set; } = new();
 }

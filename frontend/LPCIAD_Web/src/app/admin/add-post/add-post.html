@@ -1,18 +1,42 @@
+<div class="toast-error" [class.toast-error--visible]="toastVisible">
+  <span class="toast-icon">✕</span>
+  <span class="toast-text">{{ toastMessage }}</span>
+</div>
+
 <div class="add-post-wrapper">
 
-  <!-- Descrição + Botões -->
+  <!-- Descrição + Tags + Botões -->
   <div class="add-post-description-bar">
-    <textarea
-      class="description-input"
-      placeholder="Descrição breve do post..."
-      [(ngModel)]="description"
-      rows="2"
-      spellcheck="false"
-    ></textarea>
+    <div class="description-row">
+      <textarea
+        class="description-input"
+        placeholder="Descrição breve do post..."
+        [(ngModel)]="description"
+        rows="2"
+        spellcheck="false"
+      ></textarea>
+    </div>
+
+    <div class="tags-row">
+      <span class="tags-label">Categorias:</span>
+      <div class="tags-selector">
+        <button
+          *ngFor="let tag of availableTags"
+          class="tag-btn"
+          [class.tag-btn--selected]="isTagSelected(tag)"
+          [style.background]="isTagSelected(tag) ? tagColors[tag].bg : ''"
+          [style.color]="isTagSelected(tag) ? tagColors[tag].text : ''"
+          [style.border-color]="isTagSelected(tag) ? tagColors[tag].text : ''"
+          (click)="toggleTag(tag)"
+          type="button"
+        >{{ tag }}</button>
+      </div>
+    </div>
+
     <div class="description-actions">
-      <button class="btn-secondary" (click)="onClear()">Limpar</button>
-      <button class="btn-primary" [class.btn-success]="saved" (click)="onSave()">
-        {{ saved ? '✓ Salvo!' : 'Publicar Post' }}
+      <button class="btn-secondary" (click)="onClear()" [disabled]="saving">Limpar</button>
+      <button class="btn-primary" [disabled]="saving" (click)="onSave()">
+        {{ saving ? 'Salvando...' : 'Publicar Post' }}
       </button>
     </div>
   </div>
@@ -20,10 +44,16 @@
   <!-- Editor Split -->
   <div class="editor-split">
 
-    <div class="editor-pane">
+    <div
+      class="editor-pane"
+      [class.drag-over]="isDragOver"
+      (dragover)="onDragOver($event)"
+      (dragleave)="onDragLeave($event)"
+      (drop)="onDrop($event)"
+    >
       <div class="pane-header">
         <span class="pane-label">Editor</span>
-        <span class="pane-hint">Markdown</span>
+        <span class="pane-hint">Markdown · Cole ou arraste imagens</span>
         <div class="lang-toggle">
           <button
             class="lang-btn"
@@ -38,11 +68,18 @@
         </div>
       </div>
       <textarea
+        #editorTextarea
         class="editor-textarea"
         [(ngModel)]="activeMarkdown"
         placeholder="Escreva em {{ activeLang === 'pt' ? 'português' : 'inglês' }}..."
         spellcheck="false"
+        (focus)="onEditorFocus()"
+        (blur)="onEditorBlur()"
       ></textarea>
+
+      <div class="drag-hint" *ngIf="isDragOver">
+        <span class="drag-hint-text">Solte a imagem para inserir</span>
+      </div>
     </div>
 
     <div class="pane-divider"></div>
