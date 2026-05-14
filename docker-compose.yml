@@ -1,0 +1,25 @@
+services:
+  backend:
+    build:
+      context: ./backend/LPCIAD.WebApi
+      dockerfile: Dockerfile
+    ports:
+      - "5136:5136"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:5136
+      JWT__Secret: segredo-de-desenvolvimento-lpciad-32chars+
+    volumes:
+      - posts_data:/app/Posts
+
+  frontend:
+    build:
+      context: ./frontend/LPCIAD_Web
+      dockerfile: Dockerfile
+    ports:
+      - "4200:4200"
+    depends_on:
+      - backend
+
+volumes:
+  posts_data:
