@@ -5,107 +5,116 @@
 
 <div class="add-post-wrapper">
 
-  <!-- Descrição + Tags + Botões -->
-  <div class="add-post-description-bar">
-    <div class="description-row">
-      <textarea
-        class="description-input"
-        placeholder="Descrição breve do post..."
-        [(ngModel)]="description"
-        rows="2"
-        spellcheck="false"
-      ></textarea>
-    </div>
-
-    <div class="tags-row">
-      <span class="tags-label">Categorias:</span>
-      <div class="tags-selector">
-        <button
-          *ngFor="let tag of availableTags"
-          class="tag-btn"
-          [class.tag-btn--selected]="isTagSelected(tag)"
-          [style.background]="isTagSelected(tag) ? tagColors[tag].bg : ''"
-          [style.color]="isTagSelected(tag) ? tagColors[tag].text : ''"
-          [style.border-color]="isTagSelected(tag) ? tagColors[tag].text : ''"
-          (click)="toggleTag(tag)"
-          type="button"
-        >{{ tag }}</button>
-      </div>
-    </div>
-
-    <div class="description-actions">
-      <button class="btn-secondary" (click)="onClear()" [disabled]="saving">Limpar</button>
-      <button class="btn-primary" [disabled]="saving" (click)="onSave()">
-        {{ saving ? 'Salvando...' : 'Publicar Post' }}
-      </button>
-    </div>
+  <!-- Topbar -->
+  <div class="post-form-topbar">
+    <button class="btn-back" type="button" (click)="onBack()">← Dashboard</button>
+    <span class="post-form-title">
+      {{ mode === 'create' ? 'Novo Post' : 'Editar Post #' + postId }}
+    </span>
   </div>
 
-  <!-- Editor Split -->
-  <div class="editor-split">
+  <!-- Loading (modo edição) -->
+  <div class="post-form-loading" *ngIf="loadingPost">
+    <span>Carregando post...</span>
+  </div>
 
-    <div
-      class="editor-pane"
-      [class.drag-over]="isDragOver"
-      (dragover)="onDragOver($event)"
-      (dragleave)="onDragLeave($event)"
-      (drop)="onDrop($event)"
-    >
-      <div class="pane-header">
-        <span class="pane-label">Editor</span>
-        <span class="pane-hint">Markdown · Cole ou arraste imagens</span>
-        <div class="lang-toggle">
+  <ng-container *ngIf="!loadingPost">
+
+    <!-- Descrição + Tags + Botões -->
+    <div class="add-post-description-bar">
+      <div class="description-row">
+        <textarea
+          class="description-input"
+          placeholder="Descrição breve do post..."
+          [(ngModel)]="description"
+          rows="2"
+          spellcheck="false"
+        ></textarea>
+      </div>
+
+      <div class="tags-row">
+        <span class="tags-label">Categorias:</span>
+        <div class="tags-selector">
           <button
-            class="lang-btn"
-            [class.active]="activeLang === 'pt'"
-            (click)="setLang('pt')"
-          >PT</button>
-          <button
-            class="lang-btn"
-            [class.active]="activeLang === 'en'"
-            (click)="setLang('en')"
-          >EN</button>
+            *ngFor="let tag of availableTags"
+            class="tag-btn"
+            [class.tag-btn--selected]="isTagSelected(tag)"
+            [style.background]="isTagSelected(tag) ? tagColors[tag].bg : ''"
+            [style.color]="isTagSelected(tag) ? tagColors[tag].text : ''"
+            [style.border-color]="isTagSelected(tag) ? tagColors[tag].text : ''"
+            (click)="toggleTag(tag)"
+            type="button"
+          >{{ tag }}</button>
         </div>
       </div>
-      <textarea
-        #editorTextarea
-        class="editor-textarea"
-        [(ngModel)]="activeMarkdown"
-        placeholder="Escreva em {{ activeLang === 'pt' ? 'português' : 'inglês' }}..."
-        spellcheck="false"
-        (focus)="onEditorFocus()"
-        (blur)="onEditorBlur()"
-      ></textarea>
 
-      <div class="drag-hint" *ngIf="isDragOver">
-        <span class="drag-hint-text">Solte a imagem para inserir</span>
+      <div class="description-actions">
+        <button class="btn-secondary" type="button" (click)="onClear()" [disabled]="saving">Limpar</button>
+        <button class="btn-primary" type="button" [disabled]="saving" (click)="onSave()">
+          {{ saving ? 'Salvando...' : (mode === 'create' ? 'Publicar Post' : 'Salvar Alterações') }}
+        </button>
       </div>
     </div>
 
-    <div class="pane-divider"></div>
+    <!-- Editor Split -->
+    <div class="editor-split">
 
-    <div class="preview-pane">
-      <div class="pane-header">
-        <div class="pane-header-left">
-          <span class="pane-label">Preview</span>
-          <span class="pane-hint">{{ activeLang === 'pt' ? 'Português' : 'English' }}</span>
+      <div
+        class="editor-pane"
+        [class.drag-over]="isDragOver"
+        (dragover)="onDragOver($event)"
+        (dragleave)="onDragLeave($event)"
+        (drop)="onDrop($event)"
+      >
+        <div class="pane-header">
+          <span class="pane-label">Editor</span>
+          <span class="pane-hint">Markdown · Cole ou arraste imagens</span>
+          <div class="lang-toggle">
+            <button class="lang-btn" [class.active]="activeLang === 'pt'" (click)="setLang('pt')" type="button">PT</button>
+            <button class="lang-btn" [class.active]="activeLang === 'en'" (click)="setLang('en')" type="button">EN</button>
+          </div>
+        </div>
+        <textarea
+          #editorTextarea
+          class="editor-textarea"
+          [(ngModel)]="activeMarkdown"
+          placeholder="Escreva em {{ activeLang === 'pt' ? 'português' : 'inglês' }}..."
+          spellcheck="false"
+          (focus)="onEditorFocus()"
+          (blur)="onEditorBlur()"
+        ></textarea>
+
+        <div class="drag-hint" *ngIf="isDragOver">
+          <span class="drag-hint-text">Solte a imagem para inserir</span>
         </div>
       </div>
-      <div class="preview-body">
-        <div *ngIf="activeMarkdown.trim(); else empty" [innerHTML]="renderedMarkdown"></div>
-        <ng-template #empty>
-          <p class="preview-empty">O preview aparece aqui conforme você escreve...</p>
-        </ng-template>
+
+      <div class="pane-divider"></div>
+
+      <div class="preview-pane">
+        <div class="pane-header">
+          <div class="pane-header-left">
+            <span class="pane-label">Preview</span>
+            <span class="pane-hint">{{ activeLang === 'pt' ? 'Português' : 'English' }}</span>
+          </div>
+        </div>
+        <div class="preview-body">
+          <div *ngIf="activeMarkdown.trim(); else empty" [innerHTML]="renderedMarkdown"></div>
+          <ng-template #empty>
+            <p class="preview-empty">O preview aparece aqui conforme você escreve...</p>
+          </ng-template>
+        </div>
       </div>
+
     </div>
 
-  </div>
+    <!-- Rodapé com stats -->
+    <div class="add-post-footer">
+      <span><strong>{{ wordCount }}</strong> palavras</span>
+      <span><strong>{{ charCount }}</strong> caracteres</span>
+      <span><strong>{{ lineCount }}</strong> linhas</span>
+    </div>
 
-  <!-- Rodapé com stats -->
-  <div class="add-post-footer">
-    <span><strong>{{ wordCount }}</strong> palavras</span>
-    <span><strong>{{ charCount }}</strong> caracteres</span>
-    <span><strong>{{ lineCount }}</strong> linhas</span>
-  </div>
+  </ng-container>
 
 </div>

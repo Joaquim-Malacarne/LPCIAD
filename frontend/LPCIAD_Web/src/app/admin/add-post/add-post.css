@@ -38,6 +38,53 @@
   line-height: 1.45;
 }
 
+/* ─── Topbar do formulário ──────────────────────────────── */
+.post-form-topbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 32px;
+  height: 44px;
+  background: #f5f8fb;
+  border-bottom: 1px solid #e0e0e0;
+  flex-shrink: 0;
+}
+
+.btn-back {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #004267;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+  padding: 4px 10px;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+
+.btn-back:hover {
+  background: rgba(0, 66, 103, 0.1);
+}
+
+.post-form-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #004267;
+  letter-spacing: 0.2px;
+}
+
+/* ─── Loading (modo edição) ─────────────────────────────── */
+.post-form-loading {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #888;
+  font-size: 14px;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+}
+
 /* ─── Wrapper ───────────────────────────────────────────── */
 .add-post-wrapper {
   display: flex;

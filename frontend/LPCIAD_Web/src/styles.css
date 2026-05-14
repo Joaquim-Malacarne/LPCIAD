@@ -16,7 +16,36 @@ app-root {
   min-height: 100vh;
 }
 
-app-root > router-outlet + * {
+/* WCAG 2.4.1 (Pular blocos): skip-link visualmente oculto até receber foco */
+.skip-link {
+  position: absolute;
+  top: -48px;
+  left: 8px;
+  z-index: 99999;
+  background: #004267;
+  color: #ffffff;
+  padding: 8px 18px;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 0 0 4px 4px;
+  text-decoration: none;
+  transition: top 0.15s ease;
+  white-space: nowrap;
+}
+
+.skip-link:focus {
+  top: 0;
+  outline: 3px solid #ffc107;
+  outline-offset: 2px;
+}
+
+/* main não deve exibir outline ao receber foco programático do skip-link */
+main:focus {
+  outline: none;
+}
+
+app-root > main {
   flex: 1;
 }
 

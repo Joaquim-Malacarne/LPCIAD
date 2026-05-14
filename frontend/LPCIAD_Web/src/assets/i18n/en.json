@@ -59,6 +59,11 @@
   "admin.no_posts": "No posts found.",
   "admin.create_first": "Create the first post",
   "admin.publication_count": "post(s)",
+  "admin.saving": "Saving...",
+  "admin.confirm_cancel": "Cancel",
+  "admin.confirm_ok": "Confirm",
+  "admin.undo": "Undo",
+  "admin.col_modified": "Last modified",
 
   "edit_integrantes.label": "Edit Members",
   "edit_integrantes.loading": "Loading content...",
@@ -76,5 +81,13 @@
   "edit_integrantes.preview_empty": "Preview appears here as you write...",
   "edit_integrantes.words": "words",
   "edit_integrantes.chars": "characters",
-  "edit_integrantes.lines": "lines"
+  "edit_integrantes.lines": "lines",
+
+  "login.title": "Admin",
+  "login.subtitle": "Restricted area — authorized access",
+  "login.username": "Username",
+  "login.password": "Password",
+  "login.submit": "Sign in",
+  "login.submitting": "Signing in...",
+  "login.error": "Invalid credentials. Please try again."
 }

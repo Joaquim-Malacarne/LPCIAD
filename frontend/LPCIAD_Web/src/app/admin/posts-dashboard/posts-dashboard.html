@@ -1,9 +1,47 @@
+<!-- Toast de feedback — WCAG 4.1.3 / Nielsen #1 (Visibilidade do estado) -->
 <div class="toast"
   [class.toast--success]="toastType === 'success'"
   [class.toast--error]="toastType === 'error'"
-  [class.toast--visible]="toastVisible">
+  [class.toast--visible]="toastVisible"
+  role="status"
+  aria-live="polite">
   <span class="toast-icon">{{ toastType === 'success' ? '✓' : '✕' }}</span>
   <span class="toast-text">{{ toastMessage }}</span>
+  <!-- Nielsen #2 (Controle e liberdade): botão "Desfazer" disponível por 5s -->
+  <button class="toast-undo" *ngIf="undoAction" (click)="executeUndo()" type="button">
+    {{ 'admin.undo' | translate:(lang$ | async) }}
+  </button>
+</div>
+
+<!-- Modal de confirmação — Nielsen #3 (Prevenção de erros) -->
+<div class="modal-overlay" *ngIf="confirmPost as post"
+  (click)="cancelToggle()"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="modal-title">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <h2 class="modal-title" id="modal-title">
+      <ng-container *ngIf="post.isActive">Desativar post?</ng-container>
+      <ng-container *ngIf="!post.isActive">Ativar post?</ng-container>
+    </h2>
+    <p class="modal-body">
+      <ng-container *ngIf="post.isActive">
+        O post <strong>{{ post.title }}</strong> ficará invisível para os visitantes.
+      </ng-container>
+      <ng-container *ngIf="!post.isActive">
+        O post <strong>{{ post.title }}</strong> ficará visível para os visitantes.
+      </ng-container>
+    </p>
+    <div class="modal-actions">
+      <!-- Nielsen #2 (Controle e liberdade): saída sempre disponível -->
+      <button class="btn-secondary" type="button" (click)="cancelToggle()">
+        {{ 'admin.confirm_cancel' | translate:(lang$ | async) }}
+      </button>
+      <button class="btn-primary" type="button" (click)="confirmToggle()">
+        {{ 'admin.confirm_ok' | translate:(lang$ | async) }}
+      </button>
+    </div>
+  </div>
 </div>
 
 <div class="dashboard-wrapper">
@@ -35,11 +73,12 @@
         <table class="posts-table" *ngIf="posts.length > 0">
             <thead>
                 <tr>
-                    <th class="col-id">#</th>
-                    <th class="col-title">{{ 'admin.col_title' | translate:(lang$ | async) }}</th>
-                    <th class="col-desc">{{ 'admin.col_desc' | translate:(lang$ | async) }}</th>
-                    <th class="col-date">{{ 'admin.col_date' | translate:(lang$ | async) }}</th>
-                    <th class="col-actions">{{ 'admin.col_actions' | translate:(lang$ | async) }}</th>
+                    <!-- WCAG 1.3.1 (Info e relações): scope="col" associa cabeçalho à coluna para leitores de tela -->
+                    <th class="col-id" scope="col">#</th>
+                    <th class="col-title" scope="col">{{ 'admin.col_title' | translate:(lang$ | async) }}</th>
+                    <th class="col-desc" scope="col">{{ 'admin.col_desc' | translate:(lang$ | async) }}</th>
+                    <th class="col-date" scope="col">{{ 'admin.col_date' | translate:(lang$ | async) }}</th>
+                    <th class="col-actions" scope="col">{{ 'admin.col_actions' | translate:(lang$ | async) }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -56,14 +95,41 @@
                             <span class="empty-label">—</span>
                         </ng-template>
                     </td>
-                    <td class="col-date">{{ post.date | date:'dd/MM/yyyy' }}</td>
+                    <!-- Nielsen #4 (Reconhecimento): data de criação + modificação visíveis na tabela -->
+                    <td class="col-date">
+                        <span class="date-created">{{ post.date | date:'dd/MM/yyyy' }}</span>
+                        <span class="date-modified"
+                          *ngIf="isModified(post)"
+                          [title]="('admin.col_modified' | translate:(lang$ | async)) + ': ' + (post.updatedAt | date:'dd/MM/yyyy HH:mm')">
+                          ✎ {{ post.updatedAt | date:'dd/MM/yyyy' }}
+                        </span>
+                    </td>
                     <td class="col-actions">
                         <button class="btn-action btn-edit" (click)="onEdit(post)">{{ 'admin.edit' | translate:(lang$ | async) }}</button>
-                        <button class="btn-action" [class.btn-active]="post.isActive"
-                            [class.btn-inactive]="!post.isActive"
-                            [title]="post.isActive ? ('admin.disable_post' | translate:(lang$ | async)) : ('admin.enable_post' | translate:(lang$ | async))"
+
+                        <!--
+                          WCAG 1.4.1: ✓/✗ + texto garantem distinção além da cor.
+                          Nielsen #1: "Salvando..." durante a chamada PATCH.
+                          [aria-pressed] informa o estado atual a leitores de tela.
+                        -->
+                        <button class="btn-action"
+                            [class.btn-active]="post.isActive && !togglingIds.has(post.id)"
+                            [class.btn-inactive]="!post.isActive && !togglingIds.has(post.id)"
+                            [class.btn-toggling]="togglingIds.has(post.id)"
+                            [disabled]="togglingIds.has(post.id)"
+                            [attr.aria-pressed]="post.isActive"
+                            [title]="post.isActive
+                              ? ('admin.disable_post' | translate:(lang$ | async))
+                              : ('admin.enable_post'  | translate:(lang$ | async))"
                             (click)="onToggleActive(post)">
-                            {{ post.isActive ? ('admin.active' | translate:(lang$ | async)) : ('admin.inactive' | translate:(lang$ | async)) }}
+                            <ng-container *ngIf="togglingIds.has(post.id); else toggleLabel">
+                              {{ 'admin.saving' | translate:(lang$ | async) }}
+                            </ng-container>
+                            <ng-template #toggleLabel>
+                              {{ post.isActive
+                                ? ('admin.active'   | translate:(lang$ | async))
+                                : ('admin.inactive' | translate:(lang$ | async)) }}
+                            </ng-template>
                         </button>
                     </td>
                 </tr>

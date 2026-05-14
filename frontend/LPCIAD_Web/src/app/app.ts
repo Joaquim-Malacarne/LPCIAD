@@ -29,8 +29,12 @@ import { FormsModule } from '@angular/forms';
   ],
   template: `
     <app-page-loader></app-page-loader>
+    <!-- WCAG 2.4.1 (Pular blocos): permite que usuários de teclado saltem o header -->
+    <a class="skip-link" href="#main-content">Pular para o conteúdo principal</a>
     <app-header></app-header>
-    <router-outlet></router-outlet>
+    <main id="main-content" tabindex="-1">
+      <router-outlet></router-outlet>
+    </main>
     <app-footer></app-footer>
     <app-language-selector></app-language-selector>
   `

@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { PostListItem } from '../models/post.model';
+import { PostDetailItem } from '../models/post-detail.model';
 
 @Injectable({
   providedIn: 'root'
@@ -19,8 +20,8 @@ export class PostService {
   }
 
   // retorna o detalhe completo de um post pelo id e idioma (ex: 'pt' ou 'en')
-  getById(id: number, lang: string): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/${id}/Language/${lang}`);
+  getById(id: number, lang: string): Observable<PostDetailItem> {
+    return this.http.get<PostDetailItem>(`${this.apiUrl}/${id}/Language/${lang}`);
   }
 
   // cria um novo post com conteúdo em PT, EN opcional, descrição, tags e imagens

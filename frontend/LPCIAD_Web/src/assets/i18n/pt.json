@@ -59,6 +59,11 @@
   "admin.no_posts": "Nenhum post encontrado.",
   "admin.create_first": "Criar o primeiro post",
   "admin.publication_count": "publicação(ões)",
+  "admin.saving": "Salvando...",
+  "admin.confirm_cancel": "Cancelar",
+  "admin.confirm_ok": "Confirmar",
+  "admin.undo": "Desfazer",
+  "admin.col_modified": "Última modificação",
 
   "edit_integrantes.label": "Editar Integrantes",
   "edit_integrantes.loading": "Carregando conteúdo...",
@@ -76,5 +81,13 @@
   "edit_integrantes.preview_empty": "O preview aparece aqui conforme você escreve...",
   "edit_integrantes.words": "palavras",
   "edit_integrantes.chars": "caracteres",
-  "edit_integrantes.lines": "linhas"
+  "edit_integrantes.lines": "linhas",
+
+  "login.title": "Admin",
+  "login.subtitle": "Área restrita — acesso autorizado",
+  "login.username": "Usuário",
+  "login.password": "Senha",
+  "login.submit": "Entrar",
+  "login.submitting": "Entrando...",
+  "login.error": "Credenciais inválidas. Tente novamente."
 }

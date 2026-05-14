@@ -405,3 +405,18 @@ backend/LPCIAD.WebApi/Posts/*
 
 #Integrantes
 backend/LPCIAD.WebApi/Integrantes/*
+
+# Configurações sensíveis de ambiente (não commitar)
+backend/LPCIAD.WebApi/appsettings.Development.json
+backend/LPCIAD.WebApi/appsettings.Production.json
+
+# Angular build output e cache
+frontend/LPCIAD_Web/dist/
+frontend/LPCIAD_Web/.angular/
+
+# Variáveis de ambiente do frontend
+frontend/LPCIAD_Web/.env
+frontend/LPCIAD_Web/.env.*
+
+# Arquivo de contexto local para Claude AI (não é documentação de equipe)
+CLAUDE.md

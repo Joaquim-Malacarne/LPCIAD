@@ -36,6 +36,7 @@ public class PostService : IPostService
                     Title = ExtractTitle(System.IO.File.ReadAllText(ptPath), id),
                     Description = metadata.Description,
                     Date = metadata.CreatedAt,
+                    UpdatedAt = metadata.UpdatedAt,
                     Images = GetImages(id),
                     IsActive = metadata.IsActive,
                     Tags = metadata.Tags
@@ -64,6 +65,7 @@ public class PostService : IPostService
             Id = id,
             Date = metadata.CreatedAt,
             Content = content,
+            Description = metadata.Description,
             Images = GetImages(id),
             Tags = metadata.Tags
         };
@@ -165,9 +167,6 @@ public class PostService : IPostService
 
         WriteMetadata(id, description, tags, createdAt, isActive);
 
-        if (!isNew && images.Count > 0)
-            ClearDirectory(imagesFolder);
-
         foreach (var image in images)
         {
             var filePath = Path.Combine(imagesFolder, image.FileName);
@@ -211,12 +210,17 @@ public class PostService : IPostService
         return null;
     }
 
-    private (DateTime CreatedAt, string? Description, bool IsActive, List<string> Tags) ReadMetadata(int id, string fallbackPath)
+    private (DateTime CreatedAt, DateTime UpdatedAt, string? Description, bool IsActive, List<string> Tags) ReadMetadata(int id, string fallbackPath)
     {
         var path = Path.Combine(GetPostFolder(id), "metadata.json");
 
+        // updatedAt = last time metadata.json was written (any save, update or toggle resets it)
+        var updatedAt = System.IO.File.Exists(path)
+            ? System.IO.File.GetLastWriteTimeUtc(path)
+            : System.IO.File.GetCreationTimeUtc(fallbackPath);
+
         if (!System.IO.File.Exists(path))
-            return (System.IO.File.GetCreationTimeUtc(fallbackPath), null, true, new());
+            return (System.IO.File.GetCreationTimeUtc(fallbackPath), updatedAt, null, true, new());
 
         try
         {
@@ -240,11 +244,11 @@ public class PostService : IPostService
                 ? t.EnumerateArray().Select(e => e.GetString()!).Where(s => s != null).ToList()
                 : new List<string>();
 
-            return (createdAt, description, isActive, tags);
+            return (createdAt, updatedAt, description, isActive, tags);
         }
         catch
         {
-            return (System.IO.File.GetCreationTimeUtc(fallbackPath), null, true, new());
+            return (System.IO.File.GetCreationTimeUtc(fallbackPath), updatedAt, null, true, new());
         }
     }
 

@@ -3,6 +3,7 @@ export interface PostListItem {
   title: string;
   description?: string;
   date: string;
+  updatedAt?: string;
   images: string[];
   isActive: boolean;
   tags: string[];

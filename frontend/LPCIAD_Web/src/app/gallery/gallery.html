@@ -1,4 +1,7 @@
-<section class="gallery-section">
+<!-- WCAG 2.2.2 (Pausar, parar): foco em qualquer filho pausa o autoplay -->
+<section class="gallery-section"
+  (focusin)="onSectionFocusIn()"
+  (focusout)="onSectionFocusOut()">
 
   <!-- Loading -->
   <div class="gallery-feedback" *ngIf="loading">

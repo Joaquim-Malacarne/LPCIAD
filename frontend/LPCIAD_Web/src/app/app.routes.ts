@@ -24,7 +24,13 @@ export const routes: Routes = [
     path: 'admin/add-post',
     canActivate: [authGuard],
     loadComponent: () =>
-      import('./admin/add-post/add-post').then(m => m.AddPost)
+      import('./admin/add-post/add-post').then(m => m.PostForm)
+  },
+  {
+    path: 'admin/edit-post/:id',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./admin/add-post/add-post').then(m => m.PostForm)
   },
   {
     path: 'admin/edit-integrantes',

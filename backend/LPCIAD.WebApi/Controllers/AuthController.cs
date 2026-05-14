@@ -8,9 +8,6 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace LPCIAD.WebApi.Controllers;
 
-// Para gerar um novo hash de senha: BCrypt.Net.BCrypt.HashPassword("suaSenha")
-// A variável de ambiente JWT__Secret deve ter no mínimo 32 caracteres.
-
 [ApiController]
 [Route("auth")]
 public class AuthController : ControllerBase
@@ -25,19 +22,21 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public IActionResult Login([FromBody] LoginRequest request)
     {
-        var username = _configuration["Auth:Username"];
-        var passwordHash = _configuration["Auth:PasswordHash"];
+        var users = _configuration.GetSection("Auth:Users").Get<List<AuthUserConfig>>();
 
-        if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(passwordHash))
+        if (users is null || users.Count == 0)
             return StatusCode(500, "Autenticação não configurada.");
 
-        if (!string.Equals(request.Username, username, StringComparison.Ordinal))
+        var user = users.FirstOrDefault(u =>
+            string.Equals(u.Username, request.Username, StringComparison.Ordinal));
+
+        if (user is null)
             return Unauthorized("Credenciais inválidas.");
 
         bool valid;
         try
         {
-            valid = BCrypt.Net.BCrypt.Verify(request.Password, passwordHash);
+            valid = BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash);
         }
         catch
         {
@@ -47,7 +46,7 @@ public class AuthController : ControllerBase
         if (!valid)
             return Unauthorized("Credenciais inválidas.");
 
-        return Ok(new { token = GenerateToken(username) });
+        return Ok(new { token = GenerateToken(user.Username) });
     }
 
     [HttpPost("refresh")]
@@ -66,12 +65,14 @@ public class AuthController : ControllerBase
         var secret = _configuration["JWT:Secret"]
             ?? throw new InvalidOperationException("JWT:Secret (env: JWT__Secret) não configurado.");
 
+        var hours = _configuration.GetValue<int>("JWT:ExpirationHours", 8);
+
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         var token = new JwtSecurityToken(
             claims: [new Claim(ClaimTypes.Name, username)],
-            expires: DateTime.UtcNow.AddHours(8),
+            expires: DateTime.UtcNow.AddHours(hours),
             signingCredentials: creds
         );
 

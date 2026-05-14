@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit, OnDestroy, PLATFORM_ID, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Swiper } from 'swiper';
-import { Navigation, Pagination, Autoplay } from 'swiper/modules';
+import { Navigation, Pagination, Autoplay, A11y } from 'swiper/modules';
 import { PostService } from '../services/post';
 import { TranslatePipe } from '../pipes/translate.pipe';
 import { LanguageService } from '../services/language.service';
@@ -29,6 +29,8 @@ export class Gallery implements OnInit, OnDestroy {
   lang$ = inject(LanguageService).currentLang$;
 
   private swiperInstance: Swiper | null = null;
+  // Timer para evitar que focusout reinicie o autoplay quando o foco muda entre elementos filhos
+  private focusOutTimer: ReturnType<typeof setTimeout> | null = null;
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -63,9 +65,29 @@ export class Gallery implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    if (this.focusOutTimer) clearTimeout(this.focusOutTimer);
     this.swiperInstance?.destroy(true, true);
   }
 
+  // WCAG 2.2.2 (Pausar, parar): para o autoplay quando foco entra na seção
+  onSectionFocusIn(): void {
+    if (this.focusOutTimer) {
+      clearTimeout(this.focusOutTimer);
+      this.focusOutTimer = null;
+    }
+    if (!isPlatformBrowser(this.platformId)) return;
+    this.swiperInstance?.autoplay.stop();
+  }
+
+  // WCAG 2.2.2: retoma o autoplay quando foco sai da seção
+  // Delay de 100ms cancela o timer se o foco apenas se moveu para outro filho
+  onSectionFocusOut(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    this.focusOutTimer = setTimeout(() => {
+      this.swiperInstance?.autoplay.start();
+      this.focusOutTimer = null;
+    }, 100);
+  }
 
   private initSwiper(): void {
     if (this.swiperInstance) {
@@ -76,12 +98,19 @@ export class Gallery implements OnInit, OnDestroy {
     if (this.slides.length === 0) return;
 
     this.swiperInstance = new Swiper('.gallery-swiper', {
-      modules: [Navigation, Pagination, Autoplay],
+      modules: [Navigation, Pagination, Autoplay, A11y],
+      // WCAG 4.1.2 (Nome, função, valor): labels ARIA nas setas e nos bullets
+      a11y: {
+        prevSlideMessage: 'Slide anterior',
+        nextSlideMessage: 'Próximo slide',
+        paginationBulletMessage: 'Ir para o slide {{index}}',
+      },
       loop: this.slides.length > 1,
       slidesPerView: 1,
       spaceBetween: 0,
       speed: 700,
-      autoplay: { delay: 5000, disableOnInteraction: false },
+      // WCAG 2.2.2: pauseOnMouseEnter suspende autoplay no hover
+      autoplay: { delay: 5000, disableOnInteraction: false, pauseOnMouseEnter: true },
       pagination: { el: '.swiper-pagination', clickable: true },
       navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' }
     });

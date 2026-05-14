@@ -1,21 +1,29 @@
 import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID, HostListener, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { HttpErrorResponse } from '@angular/common/http';
+import { forkJoin } from 'rxjs';
 import { marked } from 'marked';
 import { POST_TAGS, TAG_COLORS } from '../../models/post-tag.model';
 import { PostService } from '../../services/post';
+import { PostDetailItem } from '../../models/post-detail.model';
+
+type Mode = 'create' | 'edit';
 
 @Component({
-  selector: 'app-add-post',
+  selector: 'app-post-form',
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './add-post.html',
   styleUrls: ['./add-post.css']
 })
-export class AddPost implements OnInit, OnDestroy {
+export class PostForm implements OnInit, OnDestroy {
+
+  mode: Mode = 'create';
+  postId: number | null = null;
+  loadingPost: boolean = false;
 
   description: string = '';
   markdownPt: string = '';
@@ -42,15 +50,46 @@ export class AddPost implements OnInit, OnDestroy {
     private sanitizer: DomSanitizer,
     private postService: PostService,
     private router: Router,
+    private route: ActivatedRoute,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    const idParam = this.route.snapshot.paramMap.get('id');
+    if (idParam !== null) {
+      this.mode = 'edit';
+      this.postId = Number(idParam);
+      this.loadPost(this.postId);
+    }
+  }
 
   ngOnDestroy(): void {
     this.blobUrls.forEach(url => URL.revokeObjectURL(url));
     this.blobUrls.clear();
     if (this.toastTimer) clearTimeout(this.toastTimer);
+  }
+
+  private loadPost(id: number): void {
+    this.loadingPost = true;
+
+    forkJoin({
+      pt: this.postService.getById(id, 'pt'),
+      en: this.postService.getById(id, 'en'),
+    }).subscribe({
+      next: ({ pt, en }: { pt: PostDetailItem; en: PostDetailItem }) => {
+        this.markdownPt = pt.content ?? '';
+        // Quando EN não existe, a API retorna o conteúdo PT como fallback.
+        // Nesse caso, tratamos EN como vazio para não pré-preencher incorretamente.
+        this.markdownEn = pt.content === en.content ? '' : (en.content ?? '');
+        this.description = pt.description ?? '';
+        this.selectedTags = [...(pt.tags ?? [])];
+        this.loadingPost = false;
+      },
+      error: () => {
+        this.showToast('Erro ao carregar o post para edição.');
+        this.loadingPost = false;
+      }
+    });
   }
 
   get activeMarkdown(): string {
@@ -99,21 +138,18 @@ export class AddPost implements OnInit, OnDestroy {
     return this.selectedTags.includes(tag);
   }
 
-  onEditorFocus(): void {
-    this.editorFocused = true;
-  }
+  onEditorFocus(): void { this.editorFocused = true; }
+  onEditorBlur(): void  { this.editorFocused = false; }
 
-  onEditorBlur(): void {
-    this.editorFocused = false;
+  onBack(): void {
+    this.router.navigate(['/admin/posts-dashboard']);
   }
 
   @HostListener('paste', ['$event'])
   onPaste(event: ClipboardEvent): void {
     if (!this.editorFocused) return;
-
     const items = event.clipboardData?.items;
     if (!items) return;
-
     for (let i = 0; i < items.length; i++) {
       if (items[i].type.startsWith('image/')) {
         event.preventDefault();
@@ -127,7 +163,6 @@ export class AddPost implements OnInit, OnDestroy {
   onDragOver(event: DragEvent): void {
     event.preventDefault();
     this.isDragOver = true;
-    // Foca o textarea para que o browser posicione o cursor de texto durante o drag
     this.editorTextareaRef?.nativeElement.focus();
   }
 
@@ -139,14 +174,10 @@ export class AddPost implements OnInit, OnDestroy {
   onDrop(event: DragEvent): void {
     event.preventDefault();
     this.isDragOver = false;
-
     const files = event.dataTransfer?.files;
     if (!files) return;
-
     for (let i = 0; i < files.length; i++) {
-      if (files[i].type.startsWith('image/')) {
-        this.insertImage(files[i]);
-      }
+      if (files[i].type.startsWith('image/')) this.insertImage(files[i]);
     }
   }
 
@@ -164,18 +195,14 @@ export class AddPost implements OnInit, OnDestroy {
     const snippet = `\n![${name}](${blobUrl})\n`;
     const textarea = this.editorTextareaRef?.nativeElement;
     const start = textarea?.selectionStart ?? this.activeMarkdown.length;
-    const end = textarea?.selectionEnd ?? start;
-    const current = this.activeMarkdown;
+    const end   = textarea?.selectionEnd   ?? start;
 
-    this.activeMarkdown = current.substring(0, start) + snippet + current.substring(end);
+    this.activeMarkdown =
+      this.activeMarkdown.substring(0, start) + snippet + this.activeMarkdown.substring(end);
 
-    // Reposiciona o cursor após o snippet inserido
     if (textarea) {
       const newPos = start + snippet.length;
-      setTimeout(() => {
-        textarea.focus();
-        textarea.setSelectionRange(newPos, newPos);
-      }, 0);
+      setTimeout(() => { textarea.focus(); textarea.setSelectionRange(newPos, newPos); }, 0);
     }
   }
 
@@ -193,6 +220,12 @@ export class AddPost implements OnInit, OnDestroy {
     return result;
   }
 
+  private cleanupBlobs(): void {
+    this.blobUrls.forEach(url => URL.revokeObjectURL(url));
+    this.blobUrls.clear();
+    this.imageMap.clear();
+  }
+
   private showToast(message: string): void {
     if (this.toastTimer) clearTimeout(this.toastTimer);
     this.toastMessage = message;
@@ -208,13 +241,23 @@ export class AddPost implements OnInit, OnDestroy {
     return 'Erro inesperado. Tente novamente.';
   }
 
+  private navigateToDashboard(message: string): void {
+    this.router.navigate(['/admin/posts-dashboard'], { state: { successMessage: message } });
+  }
+
   onSave(): void {
     if (!isPlatformBrowser(this.platformId) || this.saving) return;
-
     this.saving = true;
-    const images = Array.from(this.imageMap.entries()).map(
-      ([name, file]) => new File([file], name, { type: file.type })
-    );
+    if (this.mode === 'create') {
+      this.saveCreate();
+    } else {
+      this.saveEdit();
+    }
+  }
+
+  private saveCreate(): void {
+    const images = Array.from(this.imageMap.entries())
+      .map(([name, file]) => new File([file], name, { type: file.type }));
 
     this.postService.create(this.markdownPt, this.markdownEn, this.description, this.selectedTags, images)
       .subscribe({
@@ -222,28 +265,44 @@ export class AddPost implements OnInit, OnDestroy {
           const postId = response.id;
           const fixedPt = this.fixMarkdown(this.markdownPt, postId);
           const fixedEn = this.fixMarkdown(this.markdownEn, postId);
-
-          this.blobUrls.forEach(url => URL.revokeObjectURL(url));
-          this.blobUrls.clear();
-          this.imageMap.clear();
+          this.cleanupBlobs();
 
           this.postService.update(postId, fixedPt, fixedEn, this.description, this.selectedTags, [])
             .subscribe({
-              next: () => {
-                this.router.navigate(['/admin/posts-dashboard'], {
-                  state: { successMessage: 'Post publicado com sucesso!' }
-                });
-              },
-              error: (err: unknown) => {
-                this.saving = false;
-                this.showToast(this.extractError(err));
-              }
+              next: () => this.navigateToDashboard('Post publicado com sucesso!'),
+              error: (err: unknown) => { this.saving = false; this.showToast(this.extractError(err)); }
             });
         },
-        error: (err: unknown) => {
-          this.saving = false;
-          this.showToast(this.extractError(err));
-        }
+        error: (err: unknown) => { this.saving = false; this.showToast(this.extractError(err)); }
+      });
+  }
+
+  private saveEdit(): void {
+    const id = this.postId!;
+    const hasNewImages = this.imageMap.size > 0;
+    const newImages = Array.from(this.imageMap.entries())
+      .map(([name, file]) => new File([file], name, { type: file.type }));
+
+    // 1ª chamada: salva texto + envia novas imagens (imagens existentes são preservadas)
+    this.postService.update(id, this.markdownPt, this.markdownEn, this.description, this.selectedTags, newImages)
+      .subscribe({
+        next: () => {
+          if (hasNewImages) {
+            // 2ª chamada: substitui blob URLs pelas URLs reais no markdown
+            const fixedPt = this.fixMarkdown(this.markdownPt, id);
+            const fixedEn = this.fixMarkdown(this.markdownEn, id);
+            this.cleanupBlobs();
+
+            this.postService.update(id, fixedPt, fixedEn, this.description, this.selectedTags, [])
+              .subscribe({
+                next: () => this.navigateToDashboard('Post atualizado com sucesso!'),
+                error: (err: unknown) => { this.saving = false; this.showToast(this.extractError(err)); }
+              });
+          } else {
+            this.navigateToDashboard('Post atualizado com sucesso!');
+          }
+        },
+        error: (err: unknown) => { this.saving = false; this.showToast(this.extractError(err)); }
       });
   }
 
