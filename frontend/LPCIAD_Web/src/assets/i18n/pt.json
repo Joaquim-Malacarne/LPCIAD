@@ -6,6 +6,8 @@
   "nav.activities": "ATIVIDADES",
   "nav.partnerships": "PARCERIAS",
   "nav.courses_events": "CURSOS & EVENTOS",
+  "nav.admin_login": "Área Admin",
+  "nav.go_to_admin": "Ir para o painel admin",
 
   "footer.description": "Laboratório de Projetos de Circuitos Integrados Analógicos e Digitais.",
   "footer.quick_links": "Links Rápidos",
@@ -64,6 +66,8 @@
   "admin.confirm_ok": "Confirmar",
   "admin.undo": "Desfazer",
   "admin.col_modified": "Última modificação",
+  "admin.toggle_hint": "Posts inativos não aparecem para visitantes do site público.",
+  "admin.table_caption": "Lista de posts publicados com opções de edição, ativação e exclusão.",
 
   "edit_integrantes.label": "Editar Integrantes",
   "edit_integrantes.loading": "Carregando conteúdo...",
@@ -89,5 +93,16 @@
   "login.password": "Senha",
   "login.submit": "Entrar",
   "login.submitting": "Entrando...",
-  "login.error": "Credenciais inválidas. Tente novamente."
+  "login.error": "Credenciais inválidas. Tente novamente.",
+
+  "admin_hub.title": "Painel Administrativo",
+  "admin_hub.subtitle": "Gerencie o conteúdo do LPCIAD",
+  "admin_hub.nav_label": "Ações de administração",
+  "admin_hub.manage_posts": "Gerenciar Posts",
+  "admin_hub.manage_posts_desc": "Visualize, edite e controle a visibilidade das publicações",
+  "admin_hub.add_post": "Nova Publicação",
+  "admin_hub.add_post_desc": "Crie uma nova publicação em Markdown com imagens",
+  "admin_hub.edit_members": "Editar Integrantes",
+  "admin_hub.edit_members_desc": "Atualize a página de integrantes do laboratório",
+  "admin_hub.logout": "Sair da conta"
 }

@@ -15,6 +15,7 @@
   </div>
 
   <div class="posts-grid" *ngIf="!loading && !error && posts.length > 0">
+    <!-- WCAG 2.1.1 + 2.4.7: card focável e navegável por Enter -->
     <article class="post-card" *ngFor="let post of posts">
 
       <div class="post-image-wrapper">
@@ -39,14 +40,20 @@
           >{{ tag }}</span>
         </div>
         <p class="post-date">{{ formatDate(post.date, lang$ | async) }}</p>
-        <h3 class="post-title" (click)="goToPost(post.id)">{{ post.title }}</h3>
+        <h3 class="post-title">{{ post.title }}</h3>
         <p class="post-description" *ngIf="post.description">
           {{ post.description }}
         </p>
-        <button class="btn-read-more" (click)="goToPost(post.id)">
+        <!-- tabindex="-1": evita duplo-foco pois o card inteiro já é link -->
+        <button class="btn-read-more" tabindex="-1" (click)="goToPost(post.id); $event.stopPropagation()">
           {{ 'post_list.read_more' | translate:(lang$ | async) }}
         </button>
       </div>
+
+      <!-- stretched link: cobre o card inteiro; foco visível via :focus-visible -->
+      <a class="card-link"
+         [routerLink]="['/post', post.id]"
+         [attr.aria-label]="post.title"></a>
 
     </article>
   </div>

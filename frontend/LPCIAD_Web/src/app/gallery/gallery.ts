@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, OnDestroy, PLATFORM_ID, inject } from '@angular/core';
+import { Component, Inject, OnInit, OnDestroy, NgZone, PLATFORM_ID, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Swiper } from 'swiper';
 import { Navigation, Pagination, Autoplay, A11y } from 'swiper/modules';
@@ -29,8 +29,8 @@ export class Gallery implements OnInit, OnDestroy {
   lang$ = inject(LanguageService).currentLang$;
 
   private swiperInstance: Swiper | null = null;
-  // Timer para evitar que focusout reinicie o autoplay quando o foco muda entre elementos filhos
   private focusOutTimer: ReturnType<typeof setTimeout> | null = null;
+  private ngZone = inject(NgZone);
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -54,7 +54,7 @@ export class Gallery implements OnInit, OnDestroy {
         this.loading = false;
 
         if (isPlatformBrowser(this.platformId)) {
-          setTimeout(() => this.initSwiper(), 0);
+          this.ngZone.runOutsideAngular(() => setTimeout(() => this.initSwiper(), 0));
         }
       },
       error: () => {

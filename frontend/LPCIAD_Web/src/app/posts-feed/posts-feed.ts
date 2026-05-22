@@ -1,7 +1,7 @@
-import { Component, Input, OnInit, OnChanges, Inject, PLATFORM_ID, inject } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges, Inject, PLATFORM_ID, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { PostService } from '../services/post';
 import { PostListItem } from '../models/post.model';
 import { POST_TAGS, TAG_COLORS } from '../models/post-tag.model';
@@ -11,13 +11,14 @@ import { LanguageService } from '../services/language.service';
 @Component({
   selector: 'app-posts-feed',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslatePipe],
+  imports: [CommonModule, FormsModule, TranslatePipe, RouterModule],
   templateUrl: './posts-feed.html',
   styleUrls: ['./posts-feed.css']
 })
 export class PostsFeed implements OnInit, OnChanges {
   @Input() title = 'feed.title';
   @Input() excludeId: number | null = null;
+  @Input() initialTag: string | null = null;
 
   readonly availableTags = [...POST_TAGS];
 
@@ -47,6 +48,9 @@ export class PostsFeed implements OnInit, OnChanges {
         this.allPosts = data
           .filter(p => p.isActive && p.id !== this.excludeId)
           .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        if (this.initialTag && !this.selectedTags.includes(this.initialTag)) {
+          this.selectedTags = [this.initialTag];
+        }
         this.applyFilters();
         this.loading = false;
       },
@@ -57,8 +61,12 @@ export class PostsFeed implements OnInit, OnChanges {
     });
   }
 
-  ngOnChanges(): void {
-    if (this.allPosts.length > 0) {
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['initialTag'] && !changes['initialTag'].firstChange && this.allPosts.length > 0) {
+      this.selectedTags = this.initialTag ? [this.initialTag] : [];
+      this.applyFilters();
+    }
+    if (changes['excludeId'] && this.allPosts.length > 0) {
       this.allPosts = this.allPosts.filter(p => p.id !== this.excludeId);
       this.applyFilters();
     }

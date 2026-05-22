@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { LanguageSelector } from '../language-selector/language-selector';
 import { TranslatePipe } from '../pipes/translate.pipe';
 import { LanguageService } from '../services/language.service';
+import { AuthService } from '../services/auth';
 
 @Component({
   selector: 'app-header',
@@ -14,4 +15,11 @@ import { LanguageService } from '../services/language.service';
 })
 export class Header {
   lang$ = inject(LanguageService).currentLang$;
+
+  private readonly auth = inject(AuthService);
+  isLoggedIn$ = this.auth.isLoggedIn$;
+
+  logout(): void {
+    this.auth.logout();
+  }
 }

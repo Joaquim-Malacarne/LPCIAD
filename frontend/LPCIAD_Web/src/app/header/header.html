@@ -17,22 +17,51 @@
         <a routerLink="/integrantes">{{ 'nav.members' | translate:(lang$ | async) }}</a>
       </li>
       <li>
-        <a routerLink="/" fragment="pesquisa">{{ 'nav.research' | translate:(lang$ | async) }}</a>
+        <a [routerLink]="['/posts']" [queryParams]="{tag: 'PESQUISA'}">{{ 'nav.research' | translate:(lang$ | async) }}</a>
       </li>
       <li>
-        <a routerLink="/" fragment="projetos">{{ 'nav.projects' | translate:(lang$ | async) }}</a>
+        <a [routerLink]="['/posts']" [queryParams]="{tag: 'PROJETOS'}">{{ 'nav.projects' | translate:(lang$ | async) }}</a>
       </li>
       <li>
-        <a routerLink="/" fragment="atividades">{{ 'nav.activities' | translate:(lang$ | async) }}</a>
+        <a [routerLink]="['/posts']" [queryParams]="{tag: 'ATIVIDADES'}">{{ 'nav.activities' | translate:(lang$ | async) }}</a>
       </li>
       <li>
-        <a routerLink="/" fragment="parcerias">{{ 'nav.partnerships' | translate:(lang$ | async) }}</a>
+        <a routerLink="/posts">{{ 'nav.partnerships' | translate:(lang$ | async) }}</a>
       </li>
       <li>
-        <a routerLink="/" fragment="cursos-eventos">{{ 'nav.courses_events' | translate:(lang$ | async) }}</a>
+        <a [routerLink]="['/posts']" [queryParams]="{tag: 'CURSOS & EVENTOS'}">{{ 'nav.courses_events' | translate:(lang$ | async) }}</a>
       </li>
     </ul>
 
     <app-language-selector></app-language-selector>
+
+    <ng-container *ngIf="(isLoggedIn$ | async) === false">
+      <a
+        routerLink="/login"
+        class="admin-btn"
+        [title]="'nav.admin_login' | translate:(lang$ | async)"
+        [attr.aria-label]="'nav.admin_login' | translate:(lang$ | async)">
+        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+        <span class="admin-btn-label">{{ 'nav.admin_login' | translate:(lang$ | async) }}</span>
+      </a>
+    </ng-container>
+
+    <ng-container *ngIf="isLoggedIn$ | async">
+      <a
+        routerLink="/admin"
+        class="admin-btn admin-btn--active"
+        [title]="'nav.go_to_admin' | translate:(lang$ | async)"
+        [attr.aria-label]="'nav.go_to_admin' | translate:(lang$ | async)">
+        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+        <span class="admin-btn-label">Admin</span>
+      </a>
+    </ng-container>
   </div>
 </header>

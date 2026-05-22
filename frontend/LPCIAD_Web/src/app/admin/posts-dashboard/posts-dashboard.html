@@ -5,7 +5,7 @@
   [class.toast--visible]="toastVisible"
   role="status"
   aria-live="polite">
-  <span class="toast-icon">{{ toastType === 'success' ? '✓' : '✕' }}</span>
+  <span class="toast-icon" aria-hidden="true">{{ toastType === 'success' ? '✓' : '✕' }}</span>
   <span class="toast-text">{{ toastMessage }}</span>
   <!-- Nielsen #2 (Controle e liberdade): botão "Desfazer" disponível por 5s -->
   <button class="toast-undo" *ngIf="undoAction" (click)="executeUndo()" type="button">
@@ -57,13 +57,20 @@
         </div>
     </div>
 
+    <!-- Comunicabilidade (Eng. Semiótica): explica o significado de "ativo/inativo" para o admin -->
+    <p class="dashboard-hint">
+      <span aria-hidden="true">ℹ️</span>
+      {{ 'admin.toggle_hint' | translate:(lang$ | async) }}
+    </p>
+
+    <!-- WCAG 4.1.3: anuncia mudanças de estado ao leitor de tela -->
     <!-- Loading -->
-    <div class="feedback-state" *ngIf="loading">
+    <div class="feedback-state" *ngIf="loading" aria-live="polite" aria-busy="true">
         <span class="loading-text">{{ 'admin.loading' | translate:(lang$ | async) }}</span>
     </div>
 
     <!-- Erro -->
-    <div class="feedback-state error-state" *ngIf="error && !loading">
+    <div class="feedback-state error-state" *ngIf="error && !loading" aria-live="polite">
         <span>{{ error }}</span>
         <button class="btn-primary" (click)="loadPosts()">{{ 'admin.retry' | translate:(lang$ | async) }}</button>
     </div>
@@ -71,6 +78,10 @@
     <!-- Tabela de posts -->
     <div class="table-container" *ngIf="!loading && !error">
         <table class="posts-table" *ngIf="posts.length > 0">
+            <!-- WCAG 1.3.1: caption descreve a tabela para leitores de tela -->
+            <caption class="sr-only">
+              {{ 'admin.table_caption' | translate:(lang$ | async) }}
+            </caption>
             <thead>
                 <tr>
                     <!-- WCAG 1.3.1 (Info e relações): scope="col" associa cabeçalho à coluna para leitores de tela -->

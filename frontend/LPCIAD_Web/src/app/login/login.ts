@@ -32,7 +32,7 @@ export class Login {
 
     try {
       await this.auth.login(this.username, this.password);
-      this.router.navigate(['/admin/posts-dashboard']);
+      this.router.navigate(['/admin']);
     } catch {
       this.error = 'login.error';
     } finally {

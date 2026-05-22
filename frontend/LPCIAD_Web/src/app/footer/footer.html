@@ -14,14 +14,15 @@
     <!-- Links rápidos -->
     <div class="footer-col footer-links">
       <h4 class="footer-col-title">{{ 'footer.quick_links' | translate:(lang$ | async) }}</h4>
+      <!-- Norman (affordance): li sem href criava ilusão de link sem função; agora são <a> reais -->
       <ul>
-        <li>{{ 'nav.university' | translate:(lang$ | async) }}</li>
-        <li>{{ 'nav.members' | translate:(lang$ | async) }}</li>
-        <li>{{ 'nav.research' | translate:(lang$ | async) }}</li>
-        <li>{{ 'nav.projects' | translate:(lang$ | async) }}</li>
-        <li>{{ 'nav.activities' | translate:(lang$ | async) }}</li>
-        <li>{{ 'nav.partnerships' | translate:(lang$ | async) }}</li>
-        <li>{{ 'nav.courses_events' | translate:(lang$ | async) }}</li>
+        <li><a href="https://www.unisantos.br/" target="_blank" rel="noopener noreferrer">{{ 'nav.university' | translate:(lang$ | async) }}</a></li>
+        <li><a routerLink="/integrantes">{{ 'nav.members' | translate:(lang$ | async) }}</a></li>
+        <li><a [routerLink]="['/posts']" [queryParams]="{tag: 'PESQUISA'}">{{ 'nav.research' | translate:(lang$ | async) }}</a></li>
+        <li><a [routerLink]="['/posts']" [queryParams]="{tag: 'PROJETOS'}">{{ 'nav.projects' | translate:(lang$ | async) }}</a></li>
+        <li><a [routerLink]="['/posts']" [queryParams]="{tag: 'ATIVIDADES'}">{{ 'nav.activities' | translate:(lang$ | async) }}</a></li>
+        <li><a routerLink="/posts">{{ 'nav.partnerships' | translate:(lang$ | async) }}</a></li>
+        <li><a [routerLink]="['/posts']" [queryParams]="{tag: 'CURSOS & EVENTOS'}">{{ 'nav.courses_events' | translate:(lang$ | async) }}</a></li>
       </ul>
     </div>
 
@@ -30,7 +31,8 @@
       <h4 class="footer-col-title">{{ 'footer.contact' | translate:(lang$ | async) }}</h4>
 
       <div class="contact-item">
-        <span class="contact-icon">📍</span>
+        <!-- WCAG 1.1.1: emoji decorativo ocultado de leitores de tela -->
+        <span class="contact-icon" aria-hidden="true">📍</span>
         <div>
           <strong>{{ 'footer.campus' | translate:(lang$ | async) }}</strong><br />
           {{ 'footer.address' | translate:(lang$ | async) }}<br />
@@ -39,18 +41,21 @@
       </div>
 
       <div class="contact-item">
-        <span class="contact-icon">✉️</span>
+        <!-- WCAG 1.1.1: emoji decorativo ocultado de leitores de tela -->
+        <span class="contact-icon" aria-hidden="true">✉️</span>
         <span>lcm@unisantos.br</span>
       </div>
 
       <div class="contact-item">
-        <span class="contact-icon">🕐</span>
+        <!-- WCAG 1.1.1: emoji decorativo ocultado de leitores de tela -->
+        <span class="contact-icon" aria-hidden="true">🕐</span>
         <span>{{ 'footer.schedule' | translate:(lang$ | async) }}</span>
       </div>
 
       <div class="contact-item">
-        <span class="contact-icon">🌐</span>
-        <a style="color: white;" href="https://www.unisantos.br/" target="_blank">
+        <!-- WCAG 1.1.1: emoji decorativo ocultado de leitores de tela -->
+        <span class="contact-icon" aria-hidden="true">🌐</span>
+        <a style="color: white;" href="https://www.unisantos.br/" target="_blank" rel="noopener noreferrer">
           https://www.unisantos.br
         </a>
       </div>
@@ -59,8 +64,10 @@
     <!-- Mapa -->
     <div class="footer-col footer-map">
       <h4 class="footer-col-title">{{ 'footer.location' | translate:(lang$ | async) }}</h4>
+      <!-- WCAG 4.1.2: title fornece nome acessível ao iframe para leitores de tela -->
       <iframe
         src="https://maps.google.com/maps?q=Universidade+Cat%C3%B3lica+de+Santos%2C+Av.+Conselheiro+N%C3%A9bias%2C+300%2C+Santos%2C+SP%2C+Brasil&t=&z=16&ie=UTF8&iwloc=&output=embed"
+        title="Mapa de localização do LPCIAD"
         width="100%"
         height="190"
         allowfullscreen=""

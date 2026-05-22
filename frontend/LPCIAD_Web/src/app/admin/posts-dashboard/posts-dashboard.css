@@ -97,6 +97,16 @@
   transform: translateY(-1px);
 }
 
+/* ─── Dica de comunicabilidade ──────────────────────────── */
+.dashboard-hint {
+  margin: 0;
+  padding: 8px 32px;
+  background: #f5f8fb;
+  font-size: 13px;
+  color: #666;
+  border-bottom: 1px solid #e8eef3;
+}
+
 /* ─── Container da tabela ───────────────────────────────── */
 .table-container {
   padding: 28px 32px;

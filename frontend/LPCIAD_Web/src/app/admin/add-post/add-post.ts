@@ -306,7 +306,21 @@ export class PostForm implements OnInit, OnDestroy {
       });
   }
 
+  // Nielsen #5 (Prevenção de erros): confirma antes de descartar conteúdo não vazio
   onClear(): void {
+    const currentContent = this.activeLang === 'pt' ? this.markdownPt : this.markdownEn;
+
+    if (currentContent.trim().length === 0) return;
+
+    if (!isPlatformBrowser(this.platformId)) return;
+
+    const langLabel = this.activeLang === 'pt' ? 'PT' : 'EN';
+    const confirmed = window.confirm(
+      `Deseja apagar todo o conteúdo do editor em ${langLabel}? Esta ação não pode ser desfeita.`
+    );
+
+    if (!confirmed) return;
+
     if (this.activeLang === 'pt') {
       this.markdownPt = '';
     } else {

@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, NavigationEnd } from '@angular/router';
+import { Router, NavigationEnd, RouterModule } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { TranslatePipe } from '../pipes/translate.pipe';
 import { LanguageService } from '../services/language.service';
@@ -8,7 +8,7 @@ import { LanguageService } from '../services/language.service';
 @Component({
   selector: 'app-footer',
   standalone: true,
-  imports: [CommonModule, TranslatePipe],
+  imports: [CommonModule, TranslatePipe, RouterModule],
   templateUrl: './footer.html',
   styleUrls: ['./footer.css']
 })

@@ -6,6 +6,11 @@ export const routes: Routes = [
   { path: '', component: Home },
   { path: 'about', component: Home },
   {
+    path: 'posts',
+    loadComponent: () =>
+      import('./posts-page/posts-page').then(m => m.PostsPage)
+  },
+  {
     path: 'integrantes',
     loadComponent: () =>
       import('./integrantes/integrantes').then(m => m.Integrantes)
@@ -19,6 +24,12 @@ export const routes: Routes = [
     path: 'login',
     loadComponent: () =>
       import('./login/login').then(m => m.Login)
+  },
+  {
+    path: 'admin',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./admin/admin-hub/admin-hub').then(m => m.AdminHub)
   },
   {
     path: 'admin/add-post',

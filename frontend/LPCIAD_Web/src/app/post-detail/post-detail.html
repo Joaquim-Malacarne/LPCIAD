@@ -6,12 +6,13 @@
     </button>
   </div>
 
-  <div class="state-container" *ngIf="loading">
-    <div class="spinner"></div>
+  <!-- WCAG 4.1.3: anuncia mudanças de estado ao leitor de tela -->
+  <div class="state-container" *ngIf="loading" aria-live="polite" aria-busy="true">
+    <div class="spinner" aria-hidden="true"></div>
     <p class="state-text">{{ 'post_detail.loading' | translate:(lang$ | async) }}</p>
   </div>
 
-  <div class="state-container error" *ngIf="error && !loading">
+  <div class="state-container error" *ngIf="error && !loading" aria-live="polite">
     <p class="state-text">{{ error | translate:(lang$ | async) }}</p>
     <button class="btn-back" (click)="goBack()">← {{ 'post_detail.back' | translate:(lang$ | async) }}</button>
   </div>

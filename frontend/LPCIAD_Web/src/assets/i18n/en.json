@@ -6,6 +6,8 @@
   "nav.activities": "ACTIVITIES",
   "nav.partnerships": "PARTNERSHIPS",
   "nav.courses_events": "COURSES & EVENTS",
+  "nav.admin_login": "Admin Area",
+  "nav.go_to_admin": "Go to admin panel",
 
   "footer.description": "Laboratory of Analog and Digital Integrated Circuit Design Projects.",
   "footer.quick_links": "Quick Links",
@@ -64,6 +66,8 @@
   "admin.confirm_ok": "Confirm",
   "admin.undo": "Undo",
   "admin.col_modified": "Last modified",
+  "admin.toggle_hint": "Inactive posts are not visible to public visitors.",
+  "admin.table_caption": "List of published posts with edit, activation, and deletion options.",
 
   "edit_integrantes.label": "Edit Members",
   "edit_integrantes.loading": "Loading content...",
@@ -89,5 +93,16 @@
   "login.password": "Password",
   "login.submit": "Sign in",
   "login.submitting": "Signing in...",
-  "login.error": "Invalid credentials. Please try again."
+  "login.error": "Invalid credentials. Please try again.",
+
+  "admin_hub.title": "Admin Panel",
+  "admin_hub.subtitle": "Manage LPCIAD content",
+  "admin_hub.nav_label": "Administration actions",
+  "admin_hub.manage_posts": "Manage Posts",
+  "admin_hub.manage_posts_desc": "View, edit, and control publication visibility",
+  "admin_hub.add_post": "New Publication",
+  "admin_hub.add_post_desc": "Create a new Markdown publication with images",
+  "admin_hub.edit_members": "Edit Members",
+  "admin_hub.edit_members_desc": "Update the laboratory members page",
+  "admin_hub.logout": "Sign out"
 }

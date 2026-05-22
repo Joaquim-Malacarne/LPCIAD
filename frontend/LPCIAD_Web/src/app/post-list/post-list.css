@@ -38,6 +38,21 @@
   grid-template-columns: 180px 1fr;
   gap: 20px;
   align-items: start;
+  /* WCAG 2.1.1: position:relative necessário para o stretched link absoluto */
+  position: relative;
+}
+
+/* ─── Stretched link (cobre o card inteiro) ──────────────── */
+.card-link {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+/* WCAG 2.4.7: foco visível no card para usuários de teclado */
+.card-link:focus-visible {
+  outline: 2px solid #ffc107;
+  outline-offset: 4px;
 }
 
 /* ─── Imagem ─────────────────────────────────────────────── */
@@ -113,11 +128,11 @@
   color: #1a1a1a;
   margin: 0;
   line-height: 1.35;
-  cursor: pointer;
   transition: color 0.2s ease;
 }
 
-.post-title:hover {
+/* hover no card inteiro muda a cor do título (Nielsen #6: consistência com posts-feed) */
+.post-card:hover .post-title {
   color: #004267;
 }
 
@@ -148,6 +163,9 @@
   border-radius: 2px;
   transition: background 0.2s ease, transform 0.15s ease;
   letter-spacing: 0.3px;
+  /* acima do stretched link para capturar clique de mouse */
+  position: relative;
+  z-index: 2;
 }
 
 .btn-read-more:hover {

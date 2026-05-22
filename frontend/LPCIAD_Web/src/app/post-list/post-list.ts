@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject, PLATFORM_ID, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { PostService } from '../services/post';
 import { PostListItem } from '../models/post.model';
 import { TAG_COLORS } from '../models/post-tag.model';
@@ -10,7 +10,7 @@ import { LanguageService } from '../services/language.service';
 @Component({
   selector: 'app-post-list',
   standalone: true,
-  imports: [CommonModule, TranslatePipe],
+  imports: [CommonModule, TranslatePipe, RouterModule],
   templateUrl: './post-list.html',
   styleUrls: ['./post-list.css']
 })

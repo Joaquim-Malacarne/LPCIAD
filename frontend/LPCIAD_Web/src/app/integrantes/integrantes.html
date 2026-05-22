@@ -1,17 +1,18 @@
 <div class="integrantes-page">
 
+  <!-- WCAG 4.1.3: anuncia mudanças de estado ao leitor de tela -->
   <!-- Loading -->
-  <div class="state-container" *ngIf="loading">
-    <div class="spinner"></div>
+  <div class="state-container" *ngIf="loading" aria-live="polite" aria-busy="true">
+    <div class="spinner" aria-hidden="true"></div>
   </div>
 
   <!-- Erro -->
-  <div class="state-container" *ngIf="error && !loading">
+  <div class="state-container" *ngIf="error && !loading" aria-live="polite">
     <p class="state-text">{{ 'integrantes.error' | translate:(lang$ | async) }}</p>
   </div>
 
   <!-- Vazio -->
-  <div class="state-container" *ngIf="empty && !loading && !error">
+  <div class="state-container" *ngIf="empty && !loading && !error" aria-live="polite">
     <p class="state-text">{{ 'integrantes.empty' | translate:(lang$ | async) }}</p>
   </div>
 

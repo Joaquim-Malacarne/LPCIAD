@@ -45,6 +45,31 @@ main:focus {
   outline: none;
 }
 
+/* WCAG 1.3.1: visualmente oculto, mas lido por leitores de tela */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* WCAG 2.4.7 (Foco Visível): indicador em todos os elementos focáveis via teclado.
+   Não conflita com .skip-link:focus (regra mais específica, usa :focus, não :focus-visible). */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid #ffc107;
+  outline-offset: 2px;
+}
+
 app-root > main {
   flex: 1;
 }

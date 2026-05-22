@@ -2,7 +2,7 @@ import { Injectable, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { firstValueFrom } from 'rxjs';
+import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
@@ -13,6 +13,13 @@ export class AuthService {
   private readonly tokenKey = 'auth_token';
   private renewalTimeout: ReturnType<typeof setTimeout> | null = null;
 
+  private readonly loggedIn = new BehaviorSubject<boolean>(false);
+  readonly isLoggedIn$ = this.loggedIn.asObservable();
+
+  constructor() {
+    this.loggedIn.next(!!this.getToken());
+  }
+
   async login(username: string, password: string): Promise<void> {
     const response = await firstValueFrom(
       this.http.post<{ token: string }>(`${environment.apiUrl}/auth/login`, { username, password })
@@ -20,6 +27,7 @@ export class AuthService {
     if (isPlatformBrowser(this.platformId)) {
       localStorage.setItem(this.tokenKey, response.token);
     }
+    this.loggedIn.next(true);
     this.scheduleRenewal(response.token);
   }
 
@@ -31,6 +39,7 @@ export class AuthService {
     if (isPlatformBrowser(this.platformId)) {
       localStorage.removeItem(this.tokenKey);
     }
+    this.loggedIn.next(false);
     this.router.navigate(['/login']);
   }
 
